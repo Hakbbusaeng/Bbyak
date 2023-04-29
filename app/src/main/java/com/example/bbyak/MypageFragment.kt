@@ -21,6 +21,9 @@ class MypageFragment : Fragment() {
         binding.btManageMySchedule.setOnClickListener {
             startActivity(Intent(requireContext(), MyScheduleActivity::class.java))
         }
+        binding.btCreateMeeting.setOnClickListener {
+            startActivity(Intent(requireContext(), CreateMeetingActivity::class.java))
+        }
 
         return binding.root
     }
