@@ -2,11 +2,15 @@ package com.example.bbyak
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import com.example.bbyak.databinding.ActivityCreateMeetingBinding
 import java.util.*
 
 class CreateMeetingActivity : AppCompatActivity() {
+
+    private val FRAGMENT_CREATE_MEETING = 1
+    private val FRAGMENT_FINISH_CREATE_MEETING = 2
 
     private lateinit var binding: ActivityCreateMeetingBinding
 
@@ -17,28 +21,31 @@ class CreateMeetingActivity : AppCompatActivity() {
 
         binding.toolbar.title = "뺙 생성하기"
 
-        val curDate = Calendar.getInstance()
-        val timeZone = TimeZone.getTimeZone("Asia/Seoul")
-        curDate.timeZone = timeZone
-        curDate.set(Calendar.DAY_OF_MONTH, curDate.get(Calendar.DAY_OF_MONTH) - 1)
-        Log.e(
-            "curDate",
-            "${curDate.get(Calendar.YEAR)}/${curDate.get(Calendar.MONTH) + 1}/${curDate.get(Calendar.DAY_OF_MONTH)}"
-        )
-        binding.selectCalendarView.setMinimumDate(curDate)
-        binding.btMeetingCreate.setOnClickListener {
-            getSelectedDateList()
-        }
+        switchFragment(FRAGMENT_CREATE_MEETING)
+        binding.btConfirm.setOnClickListener { switchFragment(FRAGMENT_FINISH_CREATE_MEETING) }
+
         setContentView(binding.root)
     }
 
-    private fun getSelectedDateList() {
-        for (cal in binding.selectCalendarView.selectedDates) {
-            Log.e(
-                "get selected date",
-                "${cal.get(Calendar.YEAR)}/${cal.get(Calendar.MONTH) + 1}/${cal.get(Calendar.DAY_OF_MONTH)}"
-            )
+    private fun switchFragment(fragment: Int){
+        when(fragment) {
+            FRAGMENT_CREATE_MEETING-> {
+                supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    replace<CreateMeetingFragment>(binding.fragmentContainer.id)
+                    binding.btConfirm.text = "생성하기"
+                }
+            }
+            FRAGMENT_FINISH_CREATE_MEETING->{
+                supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    replace<FinishCreateMeetingFragment>(binding.fragmentContainer.id)
+                    binding.btConfirm.text = "완료"
+                    binding.btConfirm.setOnClickListener { finish() }
+                }
+                //뺙 생성 코드
+            }
         }
-
     }
+
 }
