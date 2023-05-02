@@ -12,7 +12,7 @@ import java.util.*
 
 class CreateMeetingFragment : Fragment() {
 
-    private lateinit var binding: FragmentCreateMeetingBinding
+    lateinit var binding: FragmentCreateMeetingBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,14 +32,5 @@ class CreateMeetingFragment : Fragment() {
         binding.selectCalendarView.setMinimumDate(curDate)
 
         return binding.root
-    }
-
-    private fun getSelectedDateList() {
-        for (cal in binding.selectCalendarView.selectedDates) {
-            Log.e(
-                "get selected date",
-                "${cal.get(Calendar.YEAR)}/${cal.get(Calendar.MONTH) + 1}/${cal.get(Calendar.DAY_OF_MONTH)}"
-            )
-        }
     }
 }
