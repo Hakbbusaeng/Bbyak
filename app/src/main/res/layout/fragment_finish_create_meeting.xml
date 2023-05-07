@@ -20,15 +20,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="링크를 참가자들과 공유해 보세요."
+        android:text="코드를 참가자들과 공유해 보세요."
         android:textColor="@color/black"
         android:textSize="16sp"/>
 
     <TextView
+        android:id="@+id/tvCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
-        android:text="linklinklinklinklinklinklink"
+        android:text="codecode"
         android:textColor="@color/black"
         android:textSize="16sp"/>
 
@@ -36,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:text="링크 복사하기"
+        android:text="코드 복사하기"
         android:textColor="@color/grey"
         android:textSize="16sp"/>
 

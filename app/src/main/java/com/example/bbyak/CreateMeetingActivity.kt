@@ -15,6 +15,9 @@ class CreateMeetingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCreateMeetingBinding
     private lateinit var cmFragment: CreateMeetingFragment
+    private lateinit var fcmFragment: FinishCreateMeetingFragment
+
+    private lateinit var meetingCode: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,25 +43,29 @@ class CreateMeetingActivity : AppCompatActivity() {
                 }
             }
             FRAGMENT_FINISH_CREATE_MEETING -> {
+                createMeeting()
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
-                    replace<FinishCreateMeetingFragment>(binding.fragmentContainer.id)
+                    fcmFragment = FinishCreateMeetingFragment()
+                    fcmFragment.arguments = Bundle().apply { putString("code", meetingCode) }
+                    replace(binding.fragmentContainer.id, fcmFragment)
                     binding.btConfirm.text = "완료"
                     binding.btConfirm.setOnClickListener { finish() }
                 }
-                createMeeting()
             }
         }
     }
 
     private fun createMeeting() {
         Log.e("meeting name", cmFragment.binding.editTextMeetingName.text.toString())
-        Log.e("min headcount", cmFragment.binding.editTextMinHeadCount.text.toString())
         for (i in cmFragment.binding.selectCalendarView.selectedDates) {
             Log.e(
                 "selected date",
                 "${i.get(Calendar.YEAR)}/${i.get(Calendar.MONTH) + 1}/${i.get(Calendar.DAY_OF_MONTH)}"
             )
         }
+
+        //get code
+        meetingCode = "A36G9E"
     }
 }
