@@ -13,13 +13,18 @@
         android:theme="@style/Theme.Bbyak"
         tools:targetApi="31">
         <activity
-            android:name=".CreateMeetingActivity"
-            android:exported="true">
+            android:name=".RetrieveMeetingActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
         </activity>
         <activity
+            android:name=".CreateMeetingActivity"
+            android:exported="true" />
+        <activity
             android:name=".MyScheduleActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

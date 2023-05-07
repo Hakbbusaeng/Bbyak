@@ -63,6 +63,4 @@ class HomeFragment : Fragment() {
         c.add( CalendarDay(cal4).apply { backgroundResource = R.drawable.light_yellow_dot })
         binding.calendarView.setCalendarDays(c as List<CalendarDay>)
     }
-
-
 }
