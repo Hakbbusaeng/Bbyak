@@ -1,5 +1,7 @@
 package com.example.bbyak
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +11,8 @@ import com.example.bbyak.databinding.ItemInvitedMeetingInfoBinding
 import com.example.bbyak.databinding.ItemTableBinding
 
 class RetrieveMeetingAdapter(
-    private val dataList: ArrayList<String>
+    private val dataList: ArrayList<String>,
+    private val context: Context
 ) : RecyclerView.Adapter<RetrieveMeetingAdapter.ItemViewHolder>() {
 
     inner class ItemViewHolder(private val binding: ItemInvitedMeetingInfoBinding) :
@@ -19,11 +22,18 @@ class RetrieveMeetingAdapter(
             binding.tvMeetingCreator.text = "by 김뺙뺙"
             binding.tvCreatedDate.text = "2023/05/07 생성"
             if (position % 2 == 0) binding.tvMaster.visibility = View.GONE
+            binding.root.setOnClickListener {
+                context.startActivity(Intent(context, CalculateMeetingActivity::class.java))
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val binding = ItemInvitedMeetingInfoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemInvitedMeetingInfoBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ItemViewHolder(binding)
     }
 

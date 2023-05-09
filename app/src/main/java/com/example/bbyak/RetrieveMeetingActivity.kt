@@ -20,6 +20,6 @@ class RetrieveMeetingActivity : AppCompatActivity() {
 
     private fun setRecyclerView() {
         binding.rvRetrieveMeeting.layoutManager = LinearLayoutManager(this)
-        binding.rvRetrieveMeeting.adapter = RetrieveMeetingAdapter(ArrayList())
+        binding.rvRetrieveMeeting.adapter = RetrieveMeetingAdapter(ArrayList(), this)
     }
 }

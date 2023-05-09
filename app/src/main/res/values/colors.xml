@@ -11,6 +11,7 @@
     <color name="yellow">#FFD772</color>
     <color name="light_yellow">#FFF1CC</color>
     <color name="light_grey">#F2F3F6</color>
+    <color name="slight_light_grey">#DBDBDF</color>
     <color name="grey">#96979B</color>
     <color name="dark_grey">#6E6E6E</color>
     <color name="text_drag">#4D4E50</color>
