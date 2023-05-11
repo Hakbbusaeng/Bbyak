@@ -21,9 +21,16 @@ class RetrieveMeetingAdapter(
             binding.tvMeetingName.text = "학술제 회의"
             binding.tvMeetingCreator.text = "by 김뺙뺙"
             binding.tvCreatedDate.text = "2023/05/07 생성"
-            if (position % 2 == 0) binding.tvMaster.visibility = View.GONE
+            val isManager = position % 2 == 0
+            if (!isManager) binding.tvMaster.visibility = View.GONE
+
             binding.root.setOnClickListener {
-                context.startActivity(Intent(context, CalculateMeetingActivity::class.java))
+                context.startActivity(
+                    Intent(
+                        context,
+                        CalculateMeetingActivity::class.java
+                    ).apply { putExtra("isManager", isManager) }
+                )
             }
         }
     }
