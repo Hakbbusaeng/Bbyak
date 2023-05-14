@@ -29,9 +29,9 @@ class SignInActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         binding.btnSignIn.setOnClickListener {
-            val email = binding.editEmail.text.toString().trim()
-            val password = binding.editPassword.text.toString().trim()
-            val password2 = binding.editPassword2.text.toString().trim()
+            val email = binding.editEmail.text.toString()
+            val password = binding.editPassword.text.toString()
+            val password2 = binding.editPassword2.text.toString()
 
             if (!isValidEmail(email)) {
                 Toast.makeText(this, "이메일을 정확히 입력해주세요", Toast.LENGTH_SHORT).show()
@@ -54,7 +54,6 @@ class SignInActivity : AppCompatActivity() {
                     updateUI(user)
                 } else {
                     Toast.makeText(this, "이미 존재하는 이메일입니다", Toast.LENGTH_SHORT).show()
-                    updateUI(null)
                 }
             }
     }
