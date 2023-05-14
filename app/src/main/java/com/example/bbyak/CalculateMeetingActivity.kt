@@ -3,6 +3,8 @@ package com.example.bbyak
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.bbyak.databinding.ActivityCalculateMeetingBinding
@@ -21,6 +23,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
     private var showMenu = false
 
     private var currentFragment = FRAGMENT_SUBMIT_SCHEDULE
+    var isScheduleSaved = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +36,18 @@ class CalculateMeetingActivity : AppCompatActivity() {
 
         switchFragment(currentFragment)
 
+        binding.btConfirm.setOnClickListener {
+            if (currentFragment == FRAGMENT_SUBMIT_SCHEDULE) {
+                isScheduleSaved = !isScheduleSaved
+                switchFragment(FRAGMENT_SUBMIT_SCHEDULE)
+            }
+        }
+
         setContentView(binding.root)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.let{
+        menu?.let {
             menuManage = it.findItem(R.id.item_manage)
             menuManage.isVisible = showMenu
         }
@@ -52,8 +62,11 @@ class CalculateMeetingActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.item_manage -> {
-                currentFragment = FRAGMENT_BEFORE_CALCULATE
-                switchFragment(currentFragment)
+                if (!isScheduleSaved) Toast.makeText(this, "스케줄을 제출해 주세요", Toast.LENGTH_SHORT).show()
+                else {
+                    currentFragment = FRAGMENT_BEFORE_CALCULATE
+                    switchFragment(currentFragment)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -70,7 +83,8 @@ class CalculateMeetingActivity : AppCompatActivity() {
                     ssFragment = SubmitScheduleFragment()
                     replace(binding.fragmentContainer.id, ssFragment)
                 }
-                binding.btConfirm.text = "제출하기"
+                if (!isScheduleSaved) binding.btConfirm.text = "제출하기"
+                else binding.btConfirm.text = "수정하기"
             }
             FRAGMENT_BEFORE_CALCULATE -> {
                 showMenu = false
@@ -86,7 +100,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        when(currentFragment){
+        when (currentFragment) {
             FRAGMENT_SUBMIT_SCHEDULE -> finish()
             FRAGMENT_BEFORE_CALCULATE -> switchFragment(FRAGMENT_SUBMIT_SCHEDULE)
         }

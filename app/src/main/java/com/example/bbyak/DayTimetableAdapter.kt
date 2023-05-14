@@ -11,7 +11,8 @@ class DayTimetableAdapter(
     private val dataList: ArrayList<String>,
     private val initialTime: ArrayList<Int>,
     private val width: Int,
-    private val height: Int
+    private val height: Int,
+    private val isScheduleSaved: Boolean
 ) : RecyclerView.Adapter<DayTimetableAdapter.ItemViewHolder>() {
 
     private val selectedTime = ArrayList(initialTime)
@@ -23,12 +24,16 @@ class DayTimetableAdapter(
             binding.tvTable.layoutParams = params
             binding.tvTable.text = data
             val time = position + 7
-            if (position == 0) binding.tvTable.textSize = 12f
-            if (selectedTime.contains(time)) binding.tvTable.setBackgroundResource(R.drawable.table_cell_disabled)
-            else binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
+            if (position == 0) {
+                binding.tvTable.textSize = 12f
+                binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
+            }
+            else if (selectedTime.contains(time)) binding.tvTable.setBackgroundResource(R.drawable.table_cell_disabled)
+            else if (!isScheduleSaved) binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
+            else binding.tvTable.setBackgroundResource(R.drawable.table_cell_selected)
 
             binding.tvTable.setOnClickListener {
-                if (position == 0) return@setOnClickListener
+                if (isScheduleSaved || position == 0) return@setOnClickListener
                 if (selectedTime.contains(time)) {
                     selectedTime.remove(time)
                     binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
@@ -40,7 +45,7 @@ class DayTimetableAdapter(
         }
     }
 
-    fun getSelectedTime(): ArrayList<Int>{
+    fun getSelectedTime(): ArrayList<Int> {
         return selectedTime
     }
 

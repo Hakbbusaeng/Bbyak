@@ -116,7 +116,10 @@ class SubmitScheduleFragment : Fragment() {
         )
         val layoutManager = LinearLayoutManager(context)
         binding.rvSchedule.layoutManager = layoutManager
-        binding.rvSchedule.adapter = DayTimetableAdapter(tableList, map[cal]!!, width, height)
+        binding.rvSchedule.adapter = DayTimetableAdapter(
+            tableList, map[cal]!!, width, height,
+            (activity as CalculateMeetingActivity).isScheduleSaved
+        )
     }
 
     fun Calendar.convertToMyCalendar(): MyCalendar {
