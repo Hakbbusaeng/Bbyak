@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:background="@drawable/yellow_stroke_white_background_20dp"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tvMeetingDateTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="05/18(화) 오후 2:00 - 오후 4:00"
+        android:textColor="@color/black"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvHeadCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="4/4명 가능"
+        android:textColor="@color/green"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvNameList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="김ㅇㅇ, 김ㅇㅇ, 김ㅇㅇ, 김ㅇㅇ"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
+</LinearLayout>

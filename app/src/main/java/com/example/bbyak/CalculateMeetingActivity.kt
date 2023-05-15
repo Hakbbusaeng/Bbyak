@@ -3,6 +3,7 @@ package com.example.bbyak
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,10 +14,12 @@ class CalculateMeetingActivity : AppCompatActivity() {
 
     private val FRAGMENT_SUBMIT_SCHEDULE = 1
     private val FRAGMENT_BEFORE_CALCULATE = 2
+    private val FRAGMENT_CALCULATE_MEETING = 3
 
     private lateinit var binding: ActivityCalculateMeetingBinding
     private lateinit var ssFragment: SubmitScheduleFragment
     private lateinit var bcFragment: BeforeCalculateFragment
+    private lateinit var cmFragment: CalculateMeetingFragment
 
     private lateinit var menuManage: MenuItem
     private var isManager = false
@@ -37,9 +40,17 @@ class CalculateMeetingActivity : AppCompatActivity() {
         switchFragment(currentFragment)
 
         binding.btConfirm.setOnClickListener {
-            if (currentFragment == FRAGMENT_SUBMIT_SCHEDULE) {
-                isScheduleSaved = !isScheduleSaved
-                switchFragment(FRAGMENT_SUBMIT_SCHEDULE)
+            when (currentFragment) {
+                FRAGMENT_SUBMIT_SCHEDULE -> {
+                    isScheduleSaved = !isScheduleSaved
+                    switchFragment(FRAGMENT_SUBMIT_SCHEDULE)
+                }
+                FRAGMENT_BEFORE_CALCULATE -> {
+                    switchFragment(FRAGMENT_CALCULATE_MEETING)
+                }
+                FRAGMENT_CALCULATE_MEETING -> {
+                    //TODO(미팅 날짜 확정)
+                }
             }
         }
 
@@ -62,7 +73,8 @@ class CalculateMeetingActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.item_manage -> {
-                if (!isScheduleSaved) Toast.makeText(this, "스케줄을 제출해 주세요", Toast.LENGTH_SHORT).show()
+                if (!isScheduleSaved) Toast.makeText(this, "스케줄을 제출해 주세요", Toast.LENGTH_SHORT)
+                    .show()
                 else {
                     currentFragment = FRAGMENT_BEFORE_CALCULATE
                     switchFragment(currentFragment)
@@ -95,6 +107,16 @@ class CalculateMeetingActivity : AppCompatActivity() {
                 }
                 binding.btConfirm.text = "날짜 계산하기"
             }
+            FRAGMENT_CALCULATE_MEETING -> {
+                showMenu = false
+                supportFragmentManager.commit {
+                    setReorderingAllowed(true)
+                    cmFragment = CalculateMeetingFragment()
+                    replace(binding.fragmentContainer.id, cmFragment)
+                }
+                binding.btConfirm.text = "확정하기"
+                binding.ivGradient.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -103,6 +125,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
         when (currentFragment) {
             FRAGMENT_SUBMIT_SCHEDULE -> finish()
             FRAGMENT_BEFORE_CALCULATE -> switchFragment(FRAGMENT_SUBMIT_SCHEDULE)
+            FRAGMENT_CALCULATE_MEETING -> switchFragment(FRAGMENT_BEFORE_CALCULATE)
         }
     }
 }

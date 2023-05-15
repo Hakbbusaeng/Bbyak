@@ -16,5 +16,7 @@
     <color name="dark_grey">#6E6E6E</color>
     <color name="text_drag">#4D4E50</color>
     <color name="button_grey">#F2F3F6</color>
+    <color name="red">#FF3D00</color>
+    <color name="green">#31BD00</color>
 
 </resources>
