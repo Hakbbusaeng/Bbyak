@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.example.bbyak.databinding.FragmentBeforeCalculateBinding
 import com.example.bbyak.databinding.ProfileListBinding
 
@@ -39,14 +41,24 @@ class BeforeCalculateFragment : Fragment() {
     }
 
     private fun setList() {
-
-        profileListBinding.profile1.text = list[0][0].toString()
-        profileListBinding.profile2.text = list[1][0].toString()
-        profileListBinding.profile3.text = list[2][0].toString()
-        profileListBinding.profile4.text = list[3][0].toString()
-        profileListBinding.profile5.text = list[4][0].toString()
-
-        profileListBinding.tvHeadCount.text = "외 ${list.size - 5}명"
+        val tvList = listOf(
+            profileListBinding.profile1,
+            profileListBinding.profile2,
+            profileListBinding.profile3,
+            profileListBinding.profile4,
+            profileListBinding.profile5
+        )
+        if (list.size > 5) profileListBinding.tvHeadCount.text = "외 ${list.size - 5}명"
+        else {
+            profileListBinding.tvHeadCount.visibility = View.GONE
+            profileListBinding.flProfileList.layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
+            )
+        }
+        for (i in 0 until 5) {
+            if (i < list.size) tvList[i].text = list[i][0].toString()
+            else tvList[i].visibility = View.GONE
+        }
     }
 
 }
