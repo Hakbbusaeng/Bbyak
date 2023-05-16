@@ -12,26 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Bbyak"
         tools:targetApi="31">
-        <activity
-            android:name=".CalculateMeetingActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".RetrieveMeetingActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".CreateMeetingActivity"
-            android:exported="true" />
-        <activity
-            android:name=".MyScheduleActivity"
-            android:exported="true" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -46,6 +27,21 @@
             android:exported="true" />
         <activity
             android:name=".SignInActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SubmitNameListActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".CalculateMeetingActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".RetrieveMeetingActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".CreateMeetingActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MyScheduleActivity"
             android:exported="true" />
     </application>
 

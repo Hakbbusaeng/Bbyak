@@ -1,5 +1,6 @@
 package com.example.bbyak
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +15,12 @@ class BeforeCalculateFragment : Fragment() {
     private lateinit var binding: FragmentBeforeCalculateBinding
     private lateinit var profileListBinding: ProfileListBinding
 
+    private val list by lazy {
+        ArrayList<String>().apply {
+            add("김ㅇㅇ"); add("이ㅇㅇ"); add("박ㅇㅇ"); add("최ㅇㅇ"); add("하ㅇㅇ"); add("한ㅇㅇ"); add("권ㅇㅇ")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -23,22 +30,23 @@ class BeforeCalculateFragment : Fragment() {
 
         setList()
 
+        profileListBinding.btViewNameList.setOnClickListener {
+            startActivity(Intent(context, SubmitNameListActivity::class.java)
+                .apply { putStringArrayListExtra("nameList", list) })
+        }
+
         return binding.root
     }
 
     private fun setList() {
-        val list = ArrayList<String>().apply {
-            add("김ㅇㅇ"); add("이ㅇㅇ"); add("박ㅇㅇ"); add("최ㅇㅇ"); add("하ㅇㅇ"); add("한ㅇㅇ"); add("권ㅇㅇ")
-        }
-        profileListBinding.profile1.text = list[0].getFirstChar().toString()
-        profileListBinding.profile2.text = list[1].getFirstChar().toString()
-        profileListBinding.profile3.text = list[2].getFirstChar().toString()
-        profileListBinding.profile4.text = list[3].getFirstChar().toString()
-        profileListBinding.profile5.text = list[4].getFirstChar().toString()
+
+        profileListBinding.profile1.text = list[0][0].toString()
+        profileListBinding.profile2.text = list[1][0].toString()
+        profileListBinding.profile3.text = list[2][0].toString()
+        profileListBinding.profile4.text = list[3][0].toString()
+        profileListBinding.profile5.text = list[4][0].toString()
 
         profileListBinding.tvHeadCount.text = "외 ${list.size - 5}명"
     }
-    private fun String.getFirstChar(): Char{
-        return this[0]
-    }
+
 }
