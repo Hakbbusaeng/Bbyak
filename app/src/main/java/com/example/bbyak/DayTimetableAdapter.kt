@@ -5,15 +5,17 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bbyak.databinding.ItemTableBinding
+import java.util.*
 
-class TimetableAdapter(
+class DayTimetableAdapter(
     private val dataList: ArrayList<String>,
+    private val initialTime: ArrayList<Int>,
     private val width: Int,
-    private val height: Int
-) : RecyclerView.Adapter<TimetableAdapter.ItemViewHolder>() {
+    private val height: Int,
+    private val isScheduleSaved: Boolean
+) : RecyclerView.Adapter<DayTimetableAdapter.ItemViewHolder>() {
 
-    //시간, 요일
-    private val selectedTime = ArrayList<Pair<Int, Int>>()
+    private val selectedTime = ArrayList(initialTime)
 
     inner class ItemViewHolder(private val binding: ItemTableBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -21,19 +23,30 @@ class TimetableAdapter(
             val params = LinearLayout.LayoutParams(width, height)
             binding.tvTable.layoutParams = params
             binding.tvTable.text = data
-            val dayOfWeek = position % 8
-            val time = position / 8 + 7
+            val time = position + 7
+            if (position == 0) {
+                binding.tvTable.textSize = 12f
+                binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
+            }
+            else if (selectedTime.contains(time)) binding.tvTable.setBackgroundResource(R.drawable.table_cell_disabled)
+            else if (!isScheduleSaved) binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
+            else binding.tvTable.setBackgroundResource(R.drawable.table_cell_selected)
+
             binding.tvTable.setOnClickListener {
-                if (dayOfWeek == 0 || time == 7) return@setOnClickListener
-                if (selectedTime.contains(Pair(dayOfWeek, time))) {
-                    selectedTime.remove(Pair(dayOfWeek, time))
+                if (isScheduleSaved || position == 0) return@setOnClickListener
+                if (selectedTime.contains(time)) {
+                    selectedTime.remove(time)
                     binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
                 } else {
-                    selectedTime.add(Pair(dayOfWeek, time))
+                    selectedTime.add(time)
                     binding.tvTable.setBackgroundResource(R.drawable.table_cell_disabled)
                 }
             }
         }
+    }
+
+    fun getSelectedTime(): ArrayList<Int> {
+        return selectedTime
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
