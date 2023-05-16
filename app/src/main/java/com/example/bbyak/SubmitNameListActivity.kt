@@ -2,6 +2,8 @@ package com.example.bbyak
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.LinearLayout
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bbyak.databinding.ActivitySubmitNameListBinding
 
@@ -19,6 +21,7 @@ class SubmitNameListActivity : AppCompatActivity() {
     private fun setRecyclerView(){
         binding.rvNameList.layoutManager = LinearLayoutManager(this)
         binding.rvNameList.adapter = NameListAdapter(intent.getStringArrayListExtra("nameList")!!)
+        binding.rvNameList.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
     }
 
 }
