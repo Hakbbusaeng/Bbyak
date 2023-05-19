@@ -9,6 +9,7 @@ import com.example.bbyak.databinding.ActivitySigninBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 class SignInActivity : AppCompatActivity() {
@@ -16,6 +17,8 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySigninBinding
 
     private lateinit var auth: FirebaseAuth
+    private val database = Firebase.database
+    private val users = database.getReference("Users")
 
     private fun isValidEmail(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
@@ -51,6 +54,11 @@ class SignInActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show()
                     val user = auth.currentUser
+                    user?.let{
+                        val uid = it.uid
+                        users.child(uid).child("email").setValue(it.email)
+                    }
+
                     updateUI(user)
                 } else {
                     Toast.makeText(this, "이미 존재하는 이메일입니다", Toast.LENGTH_SHORT).show()
