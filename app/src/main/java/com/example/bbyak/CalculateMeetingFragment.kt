@@ -10,22 +10,16 @@ import com.applandeo.materialcalendarview.CalendarDay
 import com.example.bbyak.databinding.FragmentCalculateMeetingBinding
 import java.util.*
 
-
-class PossibleTimeZone(
-    val year: Int,
-    val month: Int,
-    val day: Int,
-    val start: Int,
-    var end: Int
-)
-
 class CalculateMeetingFragment : Fragment() {
 
     private lateinit var binding: FragmentCalculateMeetingBinding
 
-    private val possibleTimes by lazy { ArrayList<PossibleTimeZone>() }
+    private lateinit var possibleTimes: ArrayList<PossibleTimeZone>
 
     private val calDays = ArrayList<CalendarDay>()
+
+    private lateinit var users: ArrayList<User>
+    private val userNames by lazy { ArrayList<String>() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,8 +27,11 @@ class CalculateMeetingFragment : Fragment() {
     ): View? {
         binding = FragmentCalculateMeetingBinding.inflate(layoutInflater)
 
-        //계산결과 날짜목록 초기화
-        initPossibleTimeList()
+        //유저 스케줄 정보 세팅
+        initUserScheduleList()
+
+        //가능한 날짜 계산
+        possibleTimes = getPossibleTime(users)
 
         //캘린더 초기화
         initCalendarDayList()
@@ -45,14 +42,47 @@ class CalculateMeetingFragment : Fragment() {
         return binding.root
     }
 
-    private fun initPossibleTimeList() {
-        //example list
-        possibleTimes.add(PossibleTimeZone(2023, 5, 4, 1, 5))
-        possibleTimes.add(PossibleTimeZone(2023, 5, 4, 6, 8))
-        possibleTimes.add(PossibleTimeZone(2023, 5, 5, 7, 9))
-        possibleTimes.add(PossibleTimeZone(2023, 5, 6, 4, 6))
-        possibleTimes.add(PossibleTimeZone(2023, 5, 6, 4, 6))
-        possibleTimes.add(PossibleTimeZone(2023, 5, 10, 4, 6))
+    private fun initUserScheduleList() {
+        //Example DataSet
+        val exTime =
+            ArrayList<Boolean>().apply {
+                add(true);add(true);add(true);add(true)
+                add(true);add(true);add(true);add(true)
+                add(true);add(true);add(true);add(true)
+                add(true);add(true);add(true);add(true)
+            }
+        val exTime2 =
+            ArrayList<Boolean>().apply {
+                add(true);add(true);add(true);add(true)
+                add(true);add(true);add(true);add(true)
+                add(false);add(false);add(false);add(false)
+                add(false);add(false);add(false);add(false)
+            }
+        val exSchedule =
+            ArrayList<Schedule>().apply {
+                add(Schedule(2023, 5, 18, exTime))
+                add(Schedule(2023, 5, 19, exTime))
+                add(Schedule(2023, 5, 20, exTime))
+                add(Schedule(2023, 5, 21, exTime))
+            }
+        val exSchedule2 =
+            ArrayList<Schedule>().apply {
+                add(Schedule(2023, 5, 18, exTime2))
+                add(Schedule(2023, 5, 19, exTime2))
+                add(Schedule(2023, 5, 20, exTime2))
+                add(Schedule(2023, 5, 21, exTime2))
+            }
+        users = ArrayList<User>().apply {
+            add(User("AAA", exSchedule))
+            add(User("BBB", exSchedule))
+            add(User("CCC", exSchedule))
+            add(User("DDD", exSchedule))
+            add(User("EEE", exSchedule))
+            add(User("FFF", exSchedule))
+            add(User("GGG", exSchedule))
+            add(User("HHH", exSchedule2))
+        }
+        for(item in users) userNames.add(item.name)
     }
 
     private fun setRecyclerView() {
@@ -60,6 +90,7 @@ class CalculateMeetingFragment : Fragment() {
         binding.rvCalculateMeetingResult.adapter =
             CalculateMeetingResultAdapter(
                 possibleTimes,
+                userNames,
                 requireContext()
             ) { y, m, d -> setHighlightDate(y, m, d) }
     }
