@@ -16,7 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
+
             <com.applandeo.materialcalendarview.CalendarView
+                android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
@@ -26,7 +28,7 @@
                 app:headerLabelColor="@color/black"
                 app:previousButtonSrc="@drawable/ic_previous"
                 app:selectionColor="@color/yellow"
-                app:todayLabelColor="@color/black"/>
+                app:todayLabelColor="@color/black" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCalculateMeetingResult"
                 android:layout_width="match_parent"

@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bbyak.databinding.ItemCalculateMeetingResultBinding
 
 class CalculateMeetingResultAdapter(
-    private val dataList: ArrayList<String>,
-    private val context: Context
+    private val dataList: ArrayList<PossibleTimeZone>,
+    private val context: Context,
+    private val callback: (Int, Int, Int) -> Unit
 ) : RecyclerView.Adapter<CalculateMeetingResultAdapter.ItemViewHolder>() {
 
     var selectedPosition = -1
@@ -17,7 +18,7 @@ class CalculateMeetingResultAdapter(
     inner class ItemViewHolder(private val binding: ItemCalculateMeetingResultBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.tvMeetingDateTime.text = "05/18(화) 오후 2:00 - 오후 4:00"
+            binding.tvMeetingDateTime.text = "${dataList[position].month}/${dataList[position].day}(화) ${dataList[position].start} - ${dataList[position].end}"
             binding.tvHeadCount.text = "4/4명 가능"
             binding.tvNameList.text = "김ㅇㅇ, 김ㅇㅇ, 김ㅇㅇ, 김ㅇㅇ"
 
@@ -29,6 +30,7 @@ class CalculateMeetingResultAdapter(
 
             binding.root.setOnClickListener {
                 selectedPosition = position
+                callback(dataList[position].year,dataList[position].month,dataList[position].day)
                 notifyDataSetChanged()
             }
 
@@ -51,6 +53,6 @@ class CalculateMeetingResultAdapter(
     }
 
     override fun getItemCount(): Int {
-        return 4
+        return dataList.size
     }
 }
