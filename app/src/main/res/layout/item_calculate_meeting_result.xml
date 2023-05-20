@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="김ㅇㅇ, 김ㅇㅇ, 김ㅇㅇ, 김ㅇㅇ"
+        android:inputType="textMultiLine"
         android:textColor="@color/black"
         android:textSize="14sp" />
 </LinearLayout>
