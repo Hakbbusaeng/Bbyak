@@ -2,11 +2,15 @@ package com.example.bbyak
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.bbyak.databinding.ActivityMainBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btMyPage: TextView;
 
     private lateinit var binding: ActivityMainBinding
+
+    private val user = Firebase.auth.currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +37,15 @@ class MainActivity : AppCompatActivity() {
         btHome.setOnClickListener { switchFragment(FRAGMENT_HOME) }
         btMyPage.setOnClickListener { switchFragment(FRAGMENT_MYPAGE) }
 
+        if (user != null) {
+            Log.e("로그인", "성공")
+            user?.let {
+                val email = it.email.toString()
+                Log.e("email", email)
+            }
+        } else {
+            Log.e("로그인", "실패")
+        }
     }
 
     private fun switchFragment(fragment: Int){

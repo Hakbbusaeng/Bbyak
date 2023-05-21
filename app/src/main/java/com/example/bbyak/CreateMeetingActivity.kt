@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.bbyak.databinding.ActivityCreateMeetingBinding
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.util.*
@@ -23,8 +24,10 @@ class CreateMeetingActivity : AppCompatActivity() {
 
     private lateinit var meetingCode: String
 
+    private val user = Firebase.auth.currentUser
     private val database = Firebase.database
-    private val meeting = database.getReference("meeting")
+    private val meetings = database.getReference("Meetings")
+    private val users = database.getReference("Users")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +67,12 @@ class CreateMeetingActivity : AppCompatActivity() {
     }
 
     data class Date(val year: Int, val month: Int, val day: Int)
-    data class User(val id: String, val date: List<Date>, val time:List<Boolean>)
-    data class Meeting(val id: String, val name: String, val date: List<Date>, val user: List<User>?)   //user: 나중에 수정하기
+    data class User(var email: String, val date: List<Date>?, val time: List<List<Boolean>>?, val master: Boolean)
+    data class Meeting(val id: String, val name: String, val date: List<Date>, val user: List<User>)   //user: 나중에 수정하기
 
     private fun createMeeting() {
-        // Meeting Id
-        val key = meeting.push().key.toString()
+        // Meeting Key
+        val key = meetings.push().key.toString()
         Log.e("meeting key", key)
 
         // Meeting Name
@@ -91,9 +94,23 @@ class CreateMeetingActivity : AppCompatActivity() {
             date.add(ymd)
         }
 
+        // Meeting User(master)
+        val userList = ArrayList<User>()
+        var master = User("",null, null, true)
+        user?.let {
+            val email = it.email.toString()
+            master.email = email
+        }
+        userList.add(master)
+
         // Add Meeting
-        val newMeeting = Meeting(key, name, date, null)
-        meeting.child(key).setValue(newMeeting)
+        val newMeeting = Meeting(key, name, date, userList)
+        meetings.child(key).setValue(newMeeting)
+
+        // Add User Data
+        user?.let {
+            users.child(it.uid).child("meetings").push().setValue(key)
+        }
 
         //get code
         meetingCode = key
