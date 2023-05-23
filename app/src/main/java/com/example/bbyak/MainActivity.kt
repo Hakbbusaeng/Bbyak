@@ -3,6 +3,7 @@ package com.example.bbyak
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -17,8 +18,8 @@ class MainActivity : AppCompatActivity() {
     private val FRAGMENT_HOME = 1
     private val FRAGMENT_MYPAGE = 2
 
-    private lateinit var btHome: TextView;
-    private lateinit var btMyPage: TextView;
+    private lateinit var btHome: ImageButton
+    private lateinit var btMyPage: ImageButton
 
     private lateinit var binding: ActivityMainBinding
 
@@ -56,8 +57,8 @@ class MainActivity : AppCompatActivity() {
                     setReorderingAllowed(true)
                     replace<HomeFragment>(binding.fragmentContainer.id)
                 }
-                btHome.setBackgroundResource(R.color.yellow)
-                btMyPage.setBackgroundResource(R.color.button_grey)
+                btHome.setImageResource(R.drawable.ic_home_selected)
+                btMyPage.setImageResource(R.drawable.ic_mypage_unselected)
             }
             FRAGMENT_MYPAGE->{
                 binding.toolbar.title = "마이페이지"
@@ -65,8 +66,8 @@ class MainActivity : AppCompatActivity() {
                     setReorderingAllowed(true)
                     replace<MypageFragment>(binding.fragmentContainer.id)
                 }
-                btHome.setBackgroundResource(R.color.button_grey)
-                btMyPage.setBackgroundResource(R.color.yellow)
+                btHome.setImageResource(R.drawable.ic_home_unselected)
+                btMyPage.setImageResource(R.drawable.ic_mypage_selected)
             }
         }
     }
