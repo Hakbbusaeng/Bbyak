@@ -9,7 +9,7 @@ class Schedule(
     val year: Int,
     val month: Int,
     val day: Int,
-    val time: ArrayList<Boolean>
+    val time: String
 )
 
 class PossibleSchedule(

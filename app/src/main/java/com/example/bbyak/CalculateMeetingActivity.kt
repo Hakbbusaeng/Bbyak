@@ -1,6 +1,7 @@
 package com.example.bbyak
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -22,7 +23,12 @@ class CalculateMeetingActivity : AppCompatActivity() {
     private lateinit var cmFragment: CalculateMeetingFragment
 
     private lateinit var menuManage: MenuItem
+
+    private var meetingCode: String? = null
+    private var meetingName: String? = null
+    private var meetingCreator: String? = null
     private var isManager = false
+
     private var showMenu = false
 
     private var currentFragment = FRAGMENT_SUBMIT_SCHEDULE
@@ -35,26 +41,48 @@ class CalculateMeetingActivity : AppCompatActivity() {
         binding.toolbar.title = "내 스케줄 제출"
         setSupportActionBar(binding.toolbar)
 
+        meetingCode = intent.getStringExtra("meetingCode")
+        meetingName = intent.getStringExtra("meetingName")
+        meetingCreator = intent.getStringExtra("meetingCreator")
         isManager = intent.getBooleanExtra("isManager", false)
+
+        //TODO(이미 제출했는지 여부 설정)
+        //isScheduleSaved = true or false
 
         switchFragment(currentFragment)
 
         binding.btConfirm.setOnClickListener {
             when (currentFragment) {
                 FRAGMENT_SUBMIT_SCHEDULE -> {
+                    if (!isScheduleSaved) binding.btConfirm.text = "수정하기"
+                    else binding.btConfirm.text = "제출하기"
                     isScheduleSaved = !isScheduleSaved
-                    switchFragment(FRAGMENT_SUBMIT_SCHEDULE)
+                    ssFragment.refreshTimeTable()
                 }
                 FRAGMENT_BEFORE_CALCULATE -> {
                     switchFragment(FRAGMENT_CALCULATE_MEETING)
                 }
                 FRAGMENT_CALCULATE_MEETING -> {
-                    //TODO(미팅 날짜 확정)
+                    confirmMeetingTime()
                 }
             }
         }
 
         setContentView(binding.root)
+    }
+
+    private fun confirmMeetingTime() {
+        val timeZone = cmFragment.getSelectedTimeZone()
+        if (timeZone == null) Toast.makeText(this, "일정을 선택해 주세요.", Toast.LENGTH_SHORT).show()
+        else {
+            Log.e(
+                "selected timeZone",
+                "${timeZone.year}/${timeZone.month}/${timeZone.day}:${timeZone.start}-${timeZone.end}"
+            )
+            finish()
+            Toast.makeText(this, "뺙 확정 완료", Toast.LENGTH_SHORT).show()
+            //TODO(일정 확정하기) meetingCode 이용
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
@@ -89,29 +117,45 @@ class CalculateMeetingActivity : AppCompatActivity() {
         currentFragment = fragment
         when (fragment) {
             FRAGMENT_SUBMIT_SCHEDULE -> {
+                binding.toolbar.title = "내 스케줄 제출"
                 showMenu = isManager
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
                     ssFragment = SubmitScheduleFragment()
+                    ssFragment.arguments = Bundle().apply {
+                        putString("meetingCode", meetingCode)
+                        putString("meetingName", meetingName)
+                        putString("meetingCreator", meetingCreator)
+                    }
                     replace(binding.fragmentContainer.id, ssFragment)
                 }
                 if (!isScheduleSaved) binding.btConfirm.text = "제출하기"
                 else binding.btConfirm.text = "수정하기"
+                binding.ivGradient.visibility = View.GONE
             }
             FRAGMENT_BEFORE_CALCULATE -> {
+                binding.toolbar.title = meetingName
                 showMenu = false
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
                     bcFragment = BeforeCalculateFragment()
+                    bcFragment.arguments = Bundle().apply {
+                        putString("meetingCode", meetingCode)
+                    }
                     replace(binding.fragmentContainer.id, bcFragment)
                 }
                 binding.btConfirm.text = "날짜 계산하기"
+                binding.ivGradient.visibility = View.GONE
             }
             FRAGMENT_CALCULATE_MEETING -> {
+                binding.toolbar.title = meetingName
                 showMenu = false
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
                     cmFragment = CalculateMeetingFragment()
+                    cmFragment.arguments = Bundle().apply {
+                        putString("meetingCode", meetingCode)
+                    }
                     replace(binding.fragmentContainer.id, cmFragment)
                 }
                 binding.btConfirm.text = "확정하기"
@@ -119,6 +163,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
             }
         }
     }
+
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {

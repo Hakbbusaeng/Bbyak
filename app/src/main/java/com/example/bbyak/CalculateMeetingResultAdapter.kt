@@ -14,7 +14,8 @@ class CalculateMeetingResultAdapter(
     private val dataList: ArrayList<PossibleTimeZone>,
     private val nameList: ArrayList<String>,
     private val context: Context,
-    private val callback: (Int, Int, Int) -> Unit
+    private val callback: (Int, Int, Int) -> Unit,
+    private val select: (Int) -> Unit
 ) : RecyclerView.Adapter<CalculateMeetingResultAdapter.ItemViewHolder>() {
 
     var selectedPosition = -1
@@ -42,6 +43,7 @@ class CalculateMeetingResultAdapter(
             binding.root.setOnClickListener {
                 selectedPosition = position
                 callback(dataList[position].year, dataList[position].month, dataList[position].day)
+                select(position)
                 notifyDataSetChanged()
             }
 

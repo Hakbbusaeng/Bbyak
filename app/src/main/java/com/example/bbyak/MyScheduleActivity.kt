@@ -3,7 +3,10 @@ package com.example.bbyak
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +22,7 @@ class MyScheduleActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.toolbar.title = "내 스케줄"
+        setSupportActionBar(binding.toolbar)
 
         initTableList()
 
@@ -36,6 +40,23 @@ class MyScheduleActivity : AppCompatActivity() {
             }
         })
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.save_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.item_save -> {
+                //TODO(스케줄 저장)
+                Toast.makeText(this, "스케줄이 저장되었습니다.", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 
     private val tableList = ArrayList<String>()
 

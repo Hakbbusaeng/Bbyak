@@ -20,23 +20,14 @@ class MyCalendar(
     val month: Int,
     val day: Int
 ) {
-    override fun equals(o: Any?): Boolean {
-        if (this === o) return true
-        if (o == null || javaClass != o.javaClass) return false
-        return (year == (o as MyCalendar).year &&
-                month == o.month &&
-                day == o.day)
-    }
-
-    override fun hashCode(): Int {
-        return Integer.valueOf(
-            year.toString() + month.toString() + day.toString()
-        )
-    }
+    var dayOfWeek: String = ""
+    var schedule: String = ""
 
     fun convertToCalendar(): Calendar {
         return Calendar.getInstance().apply { set(year, month, day) }
     }
+
+    override fun toString(): String = "$year/$month/$day"
 }
 
 class SubmitScheduleFragment : Fragment() {
@@ -46,8 +37,11 @@ class SubmitScheduleFragment : Fragment() {
     var width = 0
     var height = 0
 
-    val exampleCal = ArrayList<MyCalendar>()
-    val map = HashMap<MyCalendar, ArrayList<Int>>()
+    val cals = ArrayList<MyCalendar>()
+
+    var meetingCode: String? = null
+
+    var currentCal: MyCalendar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,13 +49,19 @@ class SubmitScheduleFragment : Fragment() {
     ): View? {
         binding = FragmentSubmitScheduleBinding.inflate(inflater)
 
-
-        initExampleCal()
-        initTableList()
+        getCalendar()
+        setTableList()
         setEnabledDate()
 
+        meetingCode = arguments?.getString("meetingCode")
+        val meetingName = arguments?.getString("meetingName")
+        val meetingCreator = arguments?.getString("meetingCreator")
+        binding.tvMeetingName.text = "$meetingName by $meetingCreator"
+
         //set first page
-        val first = exampleCal[0].convertToCalendar()
+        currentCal = cals[0]
+        val first = cals[0].convertToCalendar()
+        first.set(Calendar.MONTH, first.get(Calendar.MONTH) - 1)
         binding.selectCalendarView.setDate(first)
 
 
@@ -72,16 +72,24 @@ class SubmitScheduleFragment : Fragment() {
                 height = binding.rvSchedule.height / 17
                 Log.e("size", "width : $width, height: $height")
 
-                setTimeTable(exampleCal[0])
+                setTimeTable(cals[0])
                 binding.rvSchedule.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
 
         binding.selectCalendarView.setOnDayClickListener(object : OnDayClickListener {
             override fun onDayClick(eventDay: EventDay) {
+                currentCal?.let {
+                    setMyCalendarSchedule( it )
+                }
                 val clickedCal = eventDay.calendar
-                val myCal = clickedCal.convertToMyCalendar()
-                if (exampleCal.contains(myCal)) setTimeTable(myCal)
+                val myCal = getMyCal(
+                    clickedCal.get(Calendar.YEAR),
+                    clickedCal.get(Calendar.MONTH) + 1,
+                    clickedCal.get(Calendar.DAY_OF_MONTH)
+                )
+                currentCal = myCal
+                currentCal?.let { setTimeTable(it) }
             }
         })
 
@@ -90,53 +98,91 @@ class SubmitScheduleFragment : Fragment() {
 
     private val tableList = ArrayList<String>()
 
-    private fun initTableList() {
-        tableList.add("5/3\n(수)")
+    private fun setTableList() {
+        tableList.add("${cals[0].month}/${cals[0].day}(${cals[0].dayOfWeek})")
         for (i in 8..23) {
             tableList.add(i.toString())
         }
     }
 
-    private fun initExampleCal() {
-        exampleCal.add(MyCalendar(2023, 4, 3))
-        exampleCal.add(MyCalendar(2023, 4, 7))
-        exampleCal.add(MyCalendar(2023, 4, 15))
-        exampleCal.add(MyCalendar(2023, 4, 25))
-        map[exampleCal[0]] = ArrayList<Int>().apply { add(8);add(9);add(10);add(12);add(15); }
-        map[exampleCal[1]] = ArrayList<Int>().apply { add(10);add(11);add(12);add(13);add(15); }
-        map[exampleCal[2]] = ArrayList<Int>().apply { add(11);add(12);add(13);add(14); }
-        map[exampleCal[3]] = ArrayList<Int>().apply { add(8);add(9);add(10);add(14);add(16); }
+    private fun getCalendar() {
+        //TODO(날짜 세팅) meetingCode 이용
+        cals.add(MyCalendar(2023, 5, 3))
+        cals.add(MyCalendar(2023, 5, 7))
+        cals.add(MyCalendar(2023, 5, 15))
+        cals.add(MyCalendar(2023, 5, 25))
+
+        //요일, 스케줄 세팅
+        for (item in cals) {
+            item.dayOfWeek = getDayOfWeek(item.year, item.month, item.day)
+            item.schedule = getSchedule(item.dayOfWeek)
+        }
     }
 
+    private fun getSchedule(str: String): String {
+        //TODO(요일별 스케줄 가져오기) 예시 데이터
+        return when (str) {
+            "월" -> "0010110101011101"
+            "화" -> "1010111011010111"
+            "수" -> "1010100001001011"
+            "목" -> "1111110000000000"
+            "금" -> "1101011111000000"
+            "토" -> "1010111011010111"
+            "일" -> "1101011111000000"
+            else -> ""
+        }
+    }
+
+    private fun getDayOfWeek(year: Int, month: Int, day: Int): String {
+        val cal = Calendar.getInstance().apply { set(year, month - 1, day) }
+        return when (cal.get(Calendar.DAY_OF_WEEK)) {
+            1 -> "일"; 2 -> "월"; 3 -> "화"
+            4 -> "수"; 5 -> "목"; 6 -> "금"
+            7 -> "토"; else -> ""
+        }
+    }
+
+    private lateinit var adapter: DayTimetableAdapter
 
     private fun setTimeTable(cal: MyCalendar) {
         Log.e(
             "settimetable",
             "${cal.year} ${cal.month} ${cal.day}"
         )
+        tableList[0] = "${cal.month}/${cal.day}(${cal.dayOfWeek}}"
         val layoutManager = LinearLayoutManager(context)
         binding.rvSchedule.layoutManager = layoutManager
-        binding.rvSchedule.adapter = DayTimetableAdapter(
-            tableList, map[cal]!!, width, height,
+        adapter = DayTimetableAdapter(
+            tableList, cal.schedule, width, height,
             (activity as CalculateMeetingActivity).isScheduleSaved
         )
+        binding.rvSchedule.adapter = adapter
     }
 
-    fun Calendar.convertToMyCalendar(): MyCalendar {
-        return MyCalendar(
-            get(Calendar.YEAR),
-            get(Calendar.MONTH),
-            get(Calendar.DAY_OF_MONTH)
-        )
+    private fun getMyCal(year: Int, month: Int, day: Int): MyCalendar? {
+        for (i in cals) {
+            if (i.year == year && i.month == month && i.day == day) return i
+        }
+        return null
     }
 
 
     private fun setEnabledDate() {
         val c = ArrayList<CalendarDay>()
-        for (i in exampleCal) {
-            val cal = Calendar.getInstance().apply { set(i.year, i.month, i.day) }
+        for (i in cals) {
+            val cal = Calendar.getInstance().apply { set(i.year, i.month - 1, i.day) }
             c.add(CalendarDay(cal).apply { labelColor = R.color.black })
         }
         binding.selectCalendarView.setCalendarDays(c as List<CalendarDay>)
     }
+
+    fun setMyCalendarSchedule(cal: MyCalendar?) {
+        cal?.let { cal.schedule = adapter.getSelectedTime() }
+    }
+
+    fun refreshTimeTable(){
+        currentCal?.let { setMyCalendarSchedule(it) }
+        currentCal?.let { setTimeTable(it) }
+    }
+
 }

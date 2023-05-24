@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".RetrieveMeetingActivity">
 
@@ -17,11 +18,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:listitem="@layout/item_invited_meeting_info" />
 
-    <FrameLayout
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/gradient_shadow"
@@ -44,13 +46,12 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <EditText
-            android:id="@+id/editTextMeetingName"
+            android:id="@+id/etMeetingName"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
             android:background="@drawable/textinput_round_stroke"
             android:hint="코드 입력하기"
-            android:maxLength="6"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
             android:textColor="@color/black"
@@ -58,7 +59,7 @@
             android:textSize="16sp" />
 
         <ImageButton
-            android:id="@+id/btConfirm"
+            android:id="@+id/btAddMeeting"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"
