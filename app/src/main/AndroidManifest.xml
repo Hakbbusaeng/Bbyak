@@ -35,9 +35,6 @@
             android:name=".SignInActivity"
             android:exported="true" />
         <activity
-            android:name=".SubmitNameListActivity"
-            android:exported="true"/>
-        <activity
             android:name=".CalculateMeetingActivity"
             android:exported="true"/>
         <activity

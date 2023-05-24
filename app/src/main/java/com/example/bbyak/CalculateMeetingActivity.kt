@@ -124,6 +124,9 @@ class CalculateMeetingActivity : AppCompatActivity() {
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
                     bcFragment = BeforeCalculateFragment()
+                    bcFragment.arguments = Bundle().apply {
+                        putString("meetingCode", meetingCode)
+                    }
                     replace(binding.fragmentContainer.id, bcFragment)
                 }
                 binding.btConfirm.text = "날짜 계산하기"

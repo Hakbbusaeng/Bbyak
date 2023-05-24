@@ -9,38 +9,42 @@
     android:padding="20dp"
     tools:context=".BeforeCalculateFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/background_round20"
         android:backgroundTint="@color/light_grey"
+        android:orientation="vertical"
         android:padding="20dp">
-
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="제출 인원"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="4명"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@+id/textView6"
-            app:layout_constraintTop_toTopOf="parent" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="제출 인원"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tvHeadCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="4명"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -51,48 +55,16 @@
                 android:text="제출 명단"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
-            <include
-                layout="@layout/profile_list"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvNameList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"
+                tools:listitem="@layout/item_name" />
+
         </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="최소 참가인원"
-        android:textColor="@color/black"
-        android:textSize="20sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/editTextMinHeadCount"
-            android:layout_width="70dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/input_selector"
-            android:gravity="center"
-            android:inputType="number"
-            android:maxLength="2"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/grey"
-            android:textSize="14sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="명"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
 
     </LinearLayout>
 
