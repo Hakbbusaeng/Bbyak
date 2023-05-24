@@ -1,6 +1,7 @@
 package com.example.bbyak
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -44,13 +45,18 @@ class CalculateMeetingActivity : AppCompatActivity() {
         meetingCreator = intent.getStringExtra("meetingCreator")
         isManager = intent.getBooleanExtra("isManager", false)
 
+        //TODO(이미 제출했는지 여부 설정)
+        //isScheduleSaved = true or false
+
         switchFragment(currentFragment)
 
         binding.btConfirm.setOnClickListener {
             when (currentFragment) {
-                FRAGMENT_SUBMIT_SCHEDULE -> {
+                FRAGMENT_SUBMIT_SCHEDULE->{
+                    if (!isScheduleSaved) binding.btConfirm.text = "수정하기"
+                    else binding.btConfirm.text = "제출하기"
                     isScheduleSaved = !isScheduleSaved
-                    switchFragment(FRAGMENT_SUBMIT_SCHEDULE)
+                    ssFragment.refreshTimeTable()
                 }
                 FRAGMENT_BEFORE_CALCULATE -> {
                     switchFragment(FRAGMENT_CALCULATE_MEETING)
@@ -102,6 +108,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
                     setReorderingAllowed(true)
                     ssFragment = SubmitScheduleFragment()
                     ssFragment.arguments = Bundle().apply {
+                        putString("meetingCode", meetingCode)
                         putString("meetingName", meetingName)
                         putString("meetingCreator", meetingCreator)
                     }
