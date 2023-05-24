@@ -60,6 +60,7 @@ class SignInActivity : AppCompatActivity() {
                         usersRef.child(uid).child("name").setValue(name)
                         usersRef.child(uid).child("email").setValue(email)
                         usersRef.child(uid).child("password").setValue(password)
+                        usersRef.child(uid).child("schedule").setValue(initSchedule())
                     }
 
                     updateUI(user)
@@ -67,6 +68,10 @@ class SignInActivity : AppCompatActivity() {
                     Toast.makeText(this, "이미 존재하는 이메일입니다", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun initSchedule(): MutableList<String> {
+        return MutableList(7) { "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" }
     }
 
     private fun updateUI(user: FirebaseUser?) {
