@@ -28,6 +28,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
     private var meetingName: String? = null
     private var meetingCreator: String? = null
     private var isManager = false
+
     private var showMenu = false
 
     private var currentFragment = FRAGMENT_SUBMIT_SCHEDULE
@@ -52,7 +53,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
 
         binding.btConfirm.setOnClickListener {
             when (currentFragment) {
-                FRAGMENT_SUBMIT_SCHEDULE->{
+                FRAGMENT_SUBMIT_SCHEDULE -> {
                     if (!isScheduleSaved) binding.btConfirm.text = "수정하기"
                     else binding.btConfirm.text = "제출하기"
                     isScheduleSaved = !isScheduleSaved
@@ -62,12 +63,26 @@ class CalculateMeetingActivity : AppCompatActivity() {
                     switchFragment(FRAGMENT_CALCULATE_MEETING)
                 }
                 FRAGMENT_CALCULATE_MEETING -> {
-                    //TODO(미팅 날짜 확정)
+                    confirmMeetingTime()
                 }
             }
         }
 
         setContentView(binding.root)
+    }
+
+    private fun confirmMeetingTime() {
+        val timeZone = cmFragment.getSelectedTimeZone()
+        if (timeZone == null) Toast.makeText(this, "일정을 선택해 주세요.", Toast.LENGTH_SHORT).show()
+        else {
+            Log.e(
+                "selected timeZone",
+                "${timeZone.year}/${timeZone.month}/${timeZone.day}:${timeZone.start}-${timeZone.end}"
+            )
+            finish()
+            Toast.makeText(this, "뺙 확정 완료", Toast.LENGTH_SHORT).show()
+            //TODO(일정 확정하기) meetingCode 이용
+        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
@@ -138,6 +153,9 @@ class CalculateMeetingActivity : AppCompatActivity() {
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
                     cmFragment = CalculateMeetingFragment()
+                    cmFragment.arguments = Bundle().apply {
+                        putString("meetingCode", meetingCode)
+                    }
                     replace(binding.fragmentContainer.id, cmFragment)
                 }
                 binding.btConfirm.text = "확정하기"
@@ -145,6 +163,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
             }
         }
     }
+
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {

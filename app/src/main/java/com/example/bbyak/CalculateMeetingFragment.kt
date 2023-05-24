@@ -21,11 +21,15 @@ class CalculateMeetingFragment : Fragment() {
     private lateinit var users: ArrayList<User>
     private val userNames by lazy { ArrayList<String>() }
 
+    private var meetingCode: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCalculateMeetingBinding.inflate(layoutInflater)
+
+        meetingCode = arguments?.getString("meetingCode")
 
         //유저 스케줄 정보 세팅
         initUserScheduleList()
@@ -43,21 +47,12 @@ class CalculateMeetingFragment : Fragment() {
     }
 
     private fun initUserScheduleList() {
-        //Example DataSet
-        val exTime =
-            ArrayList<Boolean>().apply {
-                add(true);add(true);add(true);add(true)
-                add(true);add(true);add(true);add(true)
-                add(true);add(true);add(true);add(true)
-                add(true);add(true);add(true);add(true)
-            }
-        val exTime2 =
-            ArrayList<Boolean>().apply {
-                add(true);add(true);add(true);add(true)
-                add(true);add(true);add(true);add(true)
-                add(false);add(false);add(false);add(false)
-                add(false);add(false);add(false);add(false)
-            }
+
+        //TODO(제출한 유저 스케줄 users에 세팅) meetingCode 사용
+
+        //예시 데이터
+        val exTime = "1111111111111111"
+        val exTime2 = "1111111100000000"
         val exSchedule =
             ArrayList<Schedule>().apply {
                 add(Schedule(2023, 5, 18, exTime))
@@ -82,7 +77,7 @@ class CalculateMeetingFragment : Fragment() {
             add(User("GGG", exSchedule))
             add(User("HHH", exSchedule2))
         }
-        for(item in users) userNames.add(item.name)
+        for (item in users) userNames.add(item.name)
     }
 
     private fun setRecyclerView() {
@@ -91,8 +86,9 @@ class CalculateMeetingFragment : Fragment() {
             CalculateMeetingResultAdapter(
                 possibleTimes,
                 userNames,
-                requireContext()
-            ) { y, m, d -> setHighlightDate(y, m, d) }
+                requireContext(),
+                { y, m, d -> setHighlightDate(y, m, d) },
+                { pos -> selectTimeZone(pos) })
     }
 
     private fun initCalendarDayList() {
@@ -113,5 +109,14 @@ class CalculateMeetingFragment : Fragment() {
             backgroundResource = R.drawable.deep_yellow_dot
         })
         binding.calendarView.setCalendarDays(new)
+    }
+
+    private var selectedTimeZone: PossibleTimeZone? = null
+    private fun selectTimeZone(position: Int) {
+        selectedTimeZone = possibleTimes[position]
+    }
+
+    fun getSelectedTimeZone(): PossibleTimeZone?{
+        return selectedTimeZone
     }
 }

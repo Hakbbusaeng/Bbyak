@@ -25,20 +25,24 @@ fun getPossibleTime(users: ArrayList<User>): ArrayList<PossibleTimeZone>{
 
 private fun calculateSchedule(list: ArrayList<User>, name: String?): ArrayList<PossibleTimeZone> {
     val calcul = ArrayList<PossibleSchedule>()
-    for (item in list[0].schedules) calcul.add(
-        PossibleSchedule(
-            item.year,
-            item.month,
-            item.day,
-            ArrayList(item.time),
-            list.size,
-            name
+    for (item in list[0].schedules) {
+        val time = item.time.toCharArray().map { it == '1' } as ArrayList<Boolean>
+        calcul.add(
+            PossibleSchedule(
+                item.year,
+                item.month,
+                item.day,
+                ArrayList(time),
+                list.size,
+                name
+            )
         )
-    )
+    }
 
     for (i in 1 until list.size) {
         for (j in 0 until list[0].schedules.size) {
-            calcul[j].calculate(list[i].schedules[j].time)
+            val time = list[i].schedules[j].time.toCharArray().map { it == '1' } as ArrayList<Boolean>
+            calcul[j].calculate(time)
         }
     }
 
