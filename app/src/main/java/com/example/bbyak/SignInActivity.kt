@@ -18,7 +18,7 @@ class SignInActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private val database = Firebase.database
-    private val users = database.getReference("Users")
+    private val usersRef = database.getReference("Users")
 
     private fun isValidEmail(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
@@ -32,6 +32,7 @@ class SignInActivity : AppCompatActivity() {
         auth = Firebase.auth
 
         binding.btnSignIn.setOnClickListener {
+            val name = binding.editName.text.toString()
             val email = binding.editEmail.text.toString()
             val password = binding.editPassword.text.toString()
             val password2 = binding.editPassword2.text.toString()
@@ -43,12 +44,12 @@ class SignInActivity : AppCompatActivity() {
             } else if (password != password2) {
                 Toast.makeText(this, "비밀번호가 일치하지 않습니다", Toast.LENGTH_SHORT).show()
             } else {
-                createAccount(email, password)
+                createAccount(name, email, password)
             }
         }
     }
 
-    private fun createAccount(email: String, password: String) {
+    private fun createAccount(name: String, email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -56,7 +57,9 @@ class SignInActivity : AppCompatActivity() {
                     val user = auth.currentUser
                     user?.let{
                         val uid = it.uid
-                        users.child(uid).child("email").setValue(it.email)
+                        usersRef.child(uid).child("name").setValue(name)
+                        usersRef.child(uid).child("email").setValue(email)
+                        usersRef.child(uid).child("password").setValue(password)
                     }
 
                     updateUI(user)
