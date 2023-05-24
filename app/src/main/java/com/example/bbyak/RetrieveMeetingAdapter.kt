@@ -11,25 +11,29 @@ import com.example.bbyak.databinding.ItemInvitedMeetingInfoBinding
 import com.example.bbyak.databinding.ItemTableBinding
 
 class RetrieveMeetingAdapter(
-    private val dataList: ArrayList<String>,
+    private val dataList: ArrayList<Meeting>,
     private val context: Context
 ) : RecyclerView.Adapter<RetrieveMeetingAdapter.ItemViewHolder>() {
 
     inner class ItemViewHolder(private val binding: ItemInvitedMeetingInfoBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(position: Int) {
-            binding.tvMeetingName.text = "학술제 회의"
-            binding.tvMeetingCreator.text = "by 김뺙뺙"
-            binding.tvCreatedDate.text = "2023/05/07 생성"
-            val isManager = position % 2 == 0
-            if (!isManager) binding.tvMaster.visibility = View.GONE
+            binding.tvMeetingName.text = dataList[position].name
+            binding.tvMeetingCreator.text = "by ${dataList[position].creator}"
+
+            if (!dataList[position].isManager) binding.tvMaster.visibility = View.GONE
 
             binding.root.setOnClickListener {
                 context.startActivity(
                     Intent(
                         context,
                         CalculateMeetingActivity::class.java
-                    ).apply { putExtra("isManager", isManager) }
+                    ).apply {
+                        putExtra("meetingCode", dataList[position].code)
+                        putExtra("meetingName", dataList[position].name)
+                        putExtra("meetingCreator", dataList[position].creator)
+                        putExtra("isManager", dataList[position].isManager)
+                    }
                 )
             }
         }
@@ -49,6 +53,6 @@ class RetrieveMeetingAdapter(
     }
 
     override fun getItemCount(): Int {
-        return 10
+        return dataList.size
     }
 }

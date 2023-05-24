@@ -55,10 +55,13 @@ class SubmitScheduleFragment : Fragment() {
     ): View? {
         binding = FragmentSubmitScheduleBinding.inflate(inflater)
 
-
         initExampleCal()
         initTableList()
         setEnabledDate()
+
+        val meetingName = arguments?.getString("meetingName")
+        val meetingCreator = arguments?.getString("meetingCreator")
+        binding.tvMeetingName.text = "$meetingName by $meetingCreator"
 
         //set first page
         val first = exampleCal[0].convertToCalendar()

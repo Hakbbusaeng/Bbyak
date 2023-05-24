@@ -22,6 +22,10 @@ class CalculateMeetingActivity : AppCompatActivity() {
     private lateinit var cmFragment: CalculateMeetingFragment
 
     private lateinit var menuManage: MenuItem
+
+    private var meetingCode: String? = null
+    private var meetingName: String? = null
+    private var meetingCreator: String? = null
     private var isManager = false
     private var showMenu = false
 
@@ -35,6 +39,9 @@ class CalculateMeetingActivity : AppCompatActivity() {
         binding.toolbar.title = "내 스케줄 제출"
         setSupportActionBar(binding.toolbar)
 
+        meetingCode = intent.getStringExtra("meetingCode")
+        meetingName = intent.getStringExtra("meetingName")
+        meetingCreator = intent.getStringExtra("meetingCreator")
         isManager = intent.getBooleanExtra("isManager", false)
 
         switchFragment(currentFragment)
@@ -89,16 +96,23 @@ class CalculateMeetingActivity : AppCompatActivity() {
         currentFragment = fragment
         when (fragment) {
             FRAGMENT_SUBMIT_SCHEDULE -> {
+                binding.toolbar.title = "내 스케줄 제출"
                 showMenu = isManager
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
                     ssFragment = SubmitScheduleFragment()
+                    ssFragment.arguments = Bundle().apply {
+                        putString("meetingName", meetingName)
+                        putString("meetingCreator", meetingCreator)
+                    }
                     replace(binding.fragmentContainer.id, ssFragment)
                 }
                 if (!isScheduleSaved) binding.btConfirm.text = "제출하기"
                 else binding.btConfirm.text = "수정하기"
+                binding.ivGradient.visibility = View.GONE
             }
             FRAGMENT_BEFORE_CALCULATE -> {
+                binding.toolbar.title = meetingName
                 showMenu = false
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
@@ -106,8 +120,10 @@ class CalculateMeetingActivity : AppCompatActivity() {
                     replace(binding.fragmentContainer.id, bcFragment)
                 }
                 binding.btConfirm.text = "날짜 계산하기"
+                binding.ivGradient.visibility = View.GONE
             }
             FRAGMENT_CALCULATE_MEETING -> {
+                binding.toolbar.title = meetingName
                 showMenu = false
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
