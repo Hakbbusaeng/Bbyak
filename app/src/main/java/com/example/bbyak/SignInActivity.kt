@@ -17,6 +17,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySigninBinding
 
     private lateinit var auth: FirebaseAuth
+    private val user = Firebase.auth.currentUser
     private val database = Firebase.database
     private val usersRef = database.getReference("Users")
 
@@ -54,16 +55,17 @@ class SignInActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "회원가입 성공", Toast.LENGTH_SHORT).show()
-                    val user = auth.currentUser
-                    user?.let{
-                        val uid = it.uid
-                        usersRef.child(uid).child("name").setValue(name)
-                        usersRef.child(uid).child("email").setValue(email)
-                        usersRef.child(uid).child("password").setValue(password)
-                        usersRef.child(uid).child("schedule").setValue(initSchedule())
-                    }
+
+                    val uid = user?.uid.toString()
+
+                    usersRef.child(uid).child("uid").setValue(uid)
+                    usersRef.child(uid).child("name").setValue(name)
+                    usersRef.child(uid).child("email").setValue(email)
+                    usersRef.child(uid).child("password").setValue(password)
+                    usersRef.child(uid).child("schedule").setValue(initSchedule())
 
                     updateUI(user)
+
                 } else {
                     Toast.makeText(this, "이미 존재하는 이메일입니다", Toast.LENGTH_SHORT).show()
                 }
