@@ -26,8 +26,8 @@ class CreateMeetingActivity : AppCompatActivity() {
 
     private val user = Firebase.auth.currentUser
     private val database = Firebase.database
-    private val meetings = database.getReference("Meetings")
-    private val users = database.getReference("Users")
+    private val meetingsRef = database.getReference("Meetings")
+    private val usersRef = database.getReference("Users")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,53 +66,47 @@ class CreateMeetingActivity : AppCompatActivity() {
         }
     }
 
-    data class Date(val year: Int, val month: Int, val day: Int)
-    data class User(var email: String, val date: List<Date>?, val time: List<List<Boolean>>?, val master: Boolean)
-    data class Meeting(val id: String, val name: String, val date: List<Date>, val user: List<User>)   //user: 나중에 수정하기
+    data class User(val uid: String, val name: String, val time: List<String>?, val master: Boolean)
+    data class Meeting(val id: String, val name: String, val date: List<String>, val done: Boolean)   //user: 나중에 수정하기
 
     private fun createMeeting() {
-        // Meeting Key
-        val key = meetings.push().key.toString()
-        Log.e("meeting key", key)
+        // Meeting Id
+        val mId = meetingsRef.push().key.toString()
+        Log.e("meeting key", mId)
 
         // Meeting Name
-        val name = cmFragment.binding.editTextMeetingName.text.toString()
-        Log.e("meeting name", name)
+        val mName = cmFragment.binding.editTextMeetingName.text.toString()
+        Log.e("meeting name", mName)
 
         // Meeting Date
-        val date = ArrayList<Date>()
+        val mDate = ArrayList<String>()
         for (i in cmFragment.binding.selectCalendarView.selectedDates) {
             val year = i.get(Calendar.YEAR)
             val month = i.get(Calendar.MONTH) + 1
             val day = i.get(Calendar.DAY_OF_MONTH)
-            val ymd = Date(year, month, day)
+            val ymd = year.toString() + "/" + month.toString() + "/"+ day.toString()
 
-            Log.e(
-                "selected date", year.toString() + "/" + month.toString() + "/"+ day.toString()
-            )
+            Log.e("selected date", ymd)
 
-            date.add(ymd)
+            mDate.add(ymd)
         }
 
         // Meeting User(master)
-        val userList = ArrayList<User>()
-        var master = User("",null, null, true)
-        user?.let {
-            val email = it.email.toString()
-            master.email = email
+        val time = ArrayList<String>()
+        for (i in mDate) {
+            time.add("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
         }
-        userList.add(master)
+        var master = User(getUid(), getUserName(), time, true)
 
         // Add Meeting
-        val newMeeting = Meeting(key, name, date, userList)
-        meetings.child(key).setValue(newMeeting)
+        val newMeeting = Meeting(mId, mName, mDate, false)
+        meetingsRef.child(mId).setValue(newMeeting)
+        meetingsRef.child(mId).child("user").child(getUid()).setValue(master)
 
         // Add User Data
-        user?.let {
-            users.child(it.uid).child("meetings").push().setValue(key)
-        }
+        usersRef.child(getUid()).child("meeting").child(mId).setValue(mId)
 
         //get code
-        meetingCode = key
+        meetingCode = mId
     }
 }
