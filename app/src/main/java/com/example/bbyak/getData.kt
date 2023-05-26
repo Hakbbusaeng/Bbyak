@@ -28,7 +28,7 @@ suspend fun returnUserName(): String {
     val uid = getUid()
 
     return withContext(Dispatchers.IO) {
-        val ref = database.getReference("Users").child(uid).child("name")
+        val ref = usersRef.child(uid).child("name")
         val snapshot = ref.get().await()
         if (snapshot.exists()) {
             snapshot.value.toString()
@@ -47,7 +47,7 @@ suspend fun returnUserSchedule(): List<String> {
     val uid = getUid()
 
     return withContext(Dispatchers.IO) {
-        val ref = database.getReference("Users").child(uid).child("schedule")
+        val ref = usersRef.child(uid).child("schedule")
         val snapshot = ref.get().await()
 
         val uSch = ArrayList<String>()
@@ -69,9 +69,9 @@ fun getUserSchedule(): ArrayList<Pair<Int, Int>> = runBlocking {
     val schedule = ArrayList<Pair<Int, Int>>()
 
     val uSch = returnUserSchedule()
-    println(uSch)
+    println("uSch: $uSch")
     val uSchInt = uSch.map { it.split(",").map { num -> num.toInt() }}
-    println(uSchInt)
+    println("uSchInt: $uSchInt")
 
    for (i in uSchInt) {
         var day = 1
@@ -82,7 +82,7 @@ fun getUserSchedule(): ArrayList<Pair<Int, Int>> = runBlocking {
         }
         day++
     }
-    println(schedule)
+    println("schedule: $schedule")
     schedule
 }
 fun returnSelectedTime(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {

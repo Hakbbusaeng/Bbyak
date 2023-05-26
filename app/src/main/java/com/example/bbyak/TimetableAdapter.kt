@@ -13,7 +13,7 @@ class TimetableAdapter(
 ) : RecyclerView.Adapter<TimetableAdapter.ItemViewHolder>() {
 
     //시간, 요일
-    private val selectedTime = ArrayList<Pair<Int, Int>>()
+    private val selectedTime = getUserSchedule()
 
     inner class ItemViewHolder(private val binding: ItemTableBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -25,15 +25,19 @@ class TimetableAdapter(
             val time = position / 8 + 7
             binding.tvTable.setOnClickListener {
                 if (dayOfWeek == 0 || time == 7) return@setOnClickListener
-                if (selectedTime.contains(Pair(dayOfWeek, time))) {
+                if (selectedTime.contains(Pair(dayOfWeek, time))) { // 선택 해제
                     selectedTime.remove(Pair(dayOfWeek, time))
+                    //println(selectedTime)
                     binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
-                } else {
+                } else {    // 선택
                     selectedTime.add(Pair(dayOfWeek, time))
+                    //println(selectedTime)
                     binding.tvTable.setBackgroundResource(R.drawable.table_cell_disabled)
                 }
             }
         }
+
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -47,5 +51,10 @@ class TimetableAdapter(
 
     override fun getItemCount(): Int {
         return dataList.size
+    }
+
+    fun getSelectedTime():  ArrayList<Pair<Int, Int>> {
+        println("getSelectedTime: $selectedTime")
+        return selectedTime
     }
 }
