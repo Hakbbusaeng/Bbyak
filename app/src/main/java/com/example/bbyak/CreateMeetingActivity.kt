@@ -24,11 +24,6 @@ class CreateMeetingActivity : AppCompatActivity() {
 
     private lateinit var meetingCode: String
 
-    private val user = Firebase.auth.currentUser
-    private val database = Firebase.database
-    private val meetingsRef = database.getReference("Meetings")
-    private val usersRef = database.getReference("Users")
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

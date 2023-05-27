@@ -16,11 +16,6 @@ class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySigninBinding
 
-    private lateinit var auth: FirebaseAuth
-    private val user = Firebase.auth.currentUser
-    private val database = Firebase.database
-    private val usersRef = database.getReference("Users")
-
     private fun isValidEmail(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
