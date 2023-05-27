@@ -19,6 +19,9 @@ val database = Firebase.database
 val usersRef = database.getReference("Users")
 val meetingsRef = database.getReference("Meetings")
 
+data class newUser(val uid: String, val name: String, val time: List<String>?, val master: Boolean)
+data class newMeeting(val id: String, val name: String, val date: List<String>, val creator: String, val done: Boolean)
+
 fun getUid(): String {
     return user?.uid.toString()
 }
@@ -100,7 +103,7 @@ fun returnSelectedTime(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<Strin
     return schedule
 }
 
-// 미팅 정보
+// 유저 미팅 리스트
 suspend fun returnUserMeeting(): List<String>{
     val uid = getUid()
 
@@ -126,6 +129,8 @@ fun getUserMeeting(): List<String> = runBlocking {
     val meetingList = returnUserMeeting()
     meetingList
 }
+
+// 미팅 정보
 suspend fun returnMeeting(code: String): Meeting{
     val uid = getUid()
 
@@ -170,4 +175,28 @@ suspend fun returnMeeting(code: String): Meeting{
 }
 fun getMeeting(code: String): Meeting = runBlocking {
     returnMeeting(code)
+}
+
+// 미팅 날짜
+suspend fun returnMeetingDate(code: String): List<String>{
+    val meetingDate = ArrayList<String>()
+
+    return withContext(Dispatchers.IO) {
+        val ref = meetingsRef.child(code).child("date")
+        val snapshot = ref.get().await()
+
+        if (snapshot.exists()) {
+            for (childSnapshot in snapshot.children) {
+                val date = childSnapshot.value.toString()
+                meetingDate.add(date)
+            }
+        } else {
+            ""
+        }
+
+        meetingDate
+    }
+}
+fun getMeetingDate(code: String): List<String> = runBlocking {
+    returnMeetingDate(code)
 }

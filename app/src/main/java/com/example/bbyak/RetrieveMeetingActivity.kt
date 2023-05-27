@@ -24,6 +24,19 @@ class RetrieveMeetingActivity : AppCompatActivity() {
             if(binding.etMeetingName.text.equals("")) Toast.makeText(this, "코드를 입력해주세요.", Toast.LENGTH_SHORT).show()
             else {
                 //TODO(미팅에 유저 추가)
+                val code = binding.etMeetingName.text.toString()
+
+                val time = ArrayList<String>()
+                val mDate = getMeetingDate(code)
+                for (i in mDate) {
+                    time.add("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+                }
+
+                val user = newUser(getUid(), getUserName(), time, false)
+
+                usersRef.child(getUid()).child("meeting").child(code).setValue(code)
+                meetingsRef.child(code).child("user").child(getUid()).setValue(user)
+
                 getInvitedMeetingList()
                 setRecyclerView()
             }

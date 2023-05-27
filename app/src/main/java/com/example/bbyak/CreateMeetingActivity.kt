@@ -61,9 +61,6 @@ class CreateMeetingActivity : AppCompatActivity() {
         }
     }
 
-    data class User(val uid: String, val name: String, val time: List<String>?, val master: Boolean)
-    data class Meeting(val id: String, val name: String, val date: List<String>, val creator: String, val done: Boolean)
-
     private fun createMeeting() {
         // Meeting Id
         val mId = meetingsRef.push().key.toString()
@@ -91,10 +88,10 @@ class CreateMeetingActivity : AppCompatActivity() {
         for (i in mDate) {
             time.add("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
         }
-        var master = User(getUid(), getUserName(), time, true)
+        var master = newUser(getUid(), getUserName(), time, true)
 
         // Add Meeting
-        val newMeeting = Meeting(mId, mName, mDate, getUserName(),false)
+        val newMeeting = newMeeting(mId, mName, mDate, getUserName(), false)
         meetingsRef.child(mId).setValue(newMeeting)
         meetingsRef.child(mId).child("user").child(getUid()).setValue(master)
 
