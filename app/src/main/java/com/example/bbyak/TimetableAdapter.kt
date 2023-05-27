@@ -18,11 +18,15 @@ class TimetableAdapter(
     inner class ItemViewHolder(private val binding: ItemTableBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: String, position: Int) {
+            println("selectedTime: $selectedTime")
             val params = LinearLayout.LayoutParams(width, height)
             binding.tvTable.layoutParams = params
             binding.tvTable.text = data
             val dayOfWeek = position % 8
             val time = position / 8 + 7
+            if (selectedTime.contains(Pair(dayOfWeek, time))) {
+                binding.tvTable.setBackgroundResource(R.drawable.table_cell_disabled)
+            }
             binding.tvTable.setOnClickListener {
                 if (dayOfWeek == 0 || time == 7) return@setOnClickListener
                 if (selectedTime.contains(Pair(dayOfWeek, time))) { // 선택 해제
@@ -54,7 +58,6 @@ class TimetableAdapter(
     }
 
     fun getSelectedTime():  ArrayList<Pair<Int, Int>> {
-        println("getSelectedTime: $selectedTime")
         return selectedTime
     }
 }

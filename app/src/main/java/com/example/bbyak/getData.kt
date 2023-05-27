@@ -69,20 +69,20 @@ fun getUserSchedule(): ArrayList<Pair<Int, Int>> = runBlocking {
     val schedule = ArrayList<Pair<Int, Int>>()
 
     val uSch = returnUserSchedule()
-    println("uSch: $uSch")
+    //println("uSch: $uSch")
     val uSchInt = uSch.map { it.split(",").map { num -> num.toInt() }}
-    println("uSchInt: $uSchInt")
+    //println("uSchInt: $uSchInt")
 
-   for (i in uSchInt) {
-        var day = 1
-        for (j in i) {
-            var time = 8
+    var day = 1
+    for (i in uSchInt) {
+       var time = 8
+       for (j in i) {
             if (j == 1) schedule.add(Pair(day, time))
-            time++
+            time += 1
         }
-        day++
+        day += 1
     }
-    println("schedule: $schedule")
+    //println("schedule: $schedule")
     schedule
 }
 fun returnSelectedTime(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
@@ -100,3 +100,4 @@ fun returnSelectedTime(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<Strin
     return schedule
 }
 
+// 미팅 정보
