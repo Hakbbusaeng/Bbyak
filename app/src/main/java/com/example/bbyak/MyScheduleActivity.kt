@@ -16,6 +16,7 @@ import java.sql.Time
 class MyScheduleActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMyScheduleBinding
+    private lateinit var adapter: TimetableAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +52,7 @@ class MyScheduleActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.item_save -> {
                 //TODO(스케줄 저장) -> returnSelectedTime() 이 함수의 매개변수로 selectedTime 값만 넣으면 됨!!
-                usersRef.child(getUid()).child("schedule").setValue(returnSelectedTime(TimetableAdapter(tableList, binding.rvTimeTable.width, binding.rvTimeTable.height).getSelectedTime()))
+                usersRef.child(getUid()).child("schedule").setValue(returnSelectedTime(adapter.getSelectedTime()))
                 Toast.makeText(this, "스케줄이 저장되었습니다.", Toast.LENGTH_SHORT).show()
                 true
             }
@@ -76,7 +77,8 @@ class MyScheduleActivity : AppCompatActivity() {
             }
         }
         binding.rvTimeTable.layoutManager = gridLayoutManager
-        binding.rvTimeTable.adapter = TimetableAdapter(tableList, width, height)
+        adapter = TimetableAdapter(tableList, width, height)
+        binding.rvTimeTable.adapter = adapter
     }
 
 
