@@ -101,3 +101,73 @@ fun returnSelectedTime(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<Strin
 }
 
 // 미팅 정보
+suspend fun returnUserMeeting(): List<String>{
+    val uid = getUid()
+
+    val meetingList = ArrayList<String>()
+
+    return withContext(Dispatchers.IO) {
+        val ref = usersRef.child(uid).child("meeting")
+        val snapshot = ref.get().await()
+
+        if (snapshot.exists()) {
+            for (childSnapshot in snapshot.children) {
+                val meeting = childSnapshot.value.toString()
+                meetingList.add(meeting)
+            }
+        } else {
+            ""
+        }
+
+        meetingList
+    }
+}
+fun getUserMeeting(): List<String> = runBlocking {
+    val meetingList = returnUserMeeting()
+    meetingList
+}
+suspend fun returnMeeting(code: String): Meeting{
+    val uid = getUid()
+
+    var meeting = Meeting(code, "", "", false, false)
+
+    val ref = meetingsRef.child(code)
+    return withContext(Dispatchers.IO) {
+        val nameRef = ref.child("name")
+        val nameSnap = nameRef.get().await()
+        if (nameSnap.exists()) {
+            meeting.name = nameSnap.value.toString()
+        } else {
+            ""
+        }
+
+        val creatorRef = ref.child("creator")
+        val creatorSnap = creatorRef.get().await()
+        if (creatorSnap.exists()) {
+            meeting.creator = creatorSnap.value.toString()
+        } else {
+            ""
+        }
+
+        val masterRef = ref.child("user").child(getUid()).child("master")
+        val masterSnap = masterRef.get().await()
+        if (masterSnap.exists()) {
+            meeting.isMaster = masterSnap.value as Boolean
+        } else {
+            ""
+        }
+
+        val doneRef = ref.child("done")
+        val doneSnap = doneRef.get().await()
+        if (doneSnap.exists()) {
+            meeting.isDone = doneSnap.value as Boolean
+        } else {
+            ""
+        }
+
+        meeting
+    }
+}
+fun getMeeting(code: String): Meeting = runBlocking {
+    returnMeeting(code)
+}
