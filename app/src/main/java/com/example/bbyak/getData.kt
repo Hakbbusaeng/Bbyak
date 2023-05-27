@@ -41,8 +41,7 @@ suspend fun returnUserName(): String {
     }
 }
 fun getUserName(): String = runBlocking {
-    val uName = returnUserName()
-    uName
+    returnUserName()
 }
 
 // 유저 스케줄
@@ -126,14 +125,11 @@ suspend fun returnUserMeeting(): List<String>{
     }
 }
 fun getUserMeeting(): List<String> = runBlocking {
-    val meetingList = returnUserMeeting()
-    meetingList
+    returnUserMeeting()
 }
 
 // 미팅 정보
 suspend fun returnMeeting(code: String): Meeting{
-    val uid = getUid()
-
     var meeting = Meeting(code, "", "", false, false)
 
     val ref = meetingsRef.child(code)
