@@ -1,5 +1,8 @@
 package com.example.bbyak
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bbyak.databinding.FragmentBeforeCalculateBinding
@@ -30,7 +34,17 @@ class BeforeCalculateFragment : Fragment() {
         binding = FragmentBeforeCalculateBinding.inflate(layoutInflater)
 
         meetingCode = arguments?.getString("meetingCode")
-        
+
+
+        binding.tvCode.text = meetingCode
+        binding.btCopy.setOnClickListener {
+            val clipboard =
+                requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("code", meetingCode)
+            clipboard.setPrimaryClip(clip)
+            Toast.makeText(context, "코드가 복사되었습니다", Toast.LENGTH_SHORT).show()
+        }
+
         getSubmitNameList()
         setRecyclerView()
 
