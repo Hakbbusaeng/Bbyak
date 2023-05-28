@@ -21,15 +21,17 @@ class RetrieveMeetingActivity : AppCompatActivity() {
         binding.toolbar.title = "뺙 조회하기"
 
         binding.btAddMeeting.setOnClickListener{
+            val code = binding.etMeetingName.text.toString()
+            val meetingList = getMeetingList()
+
             if(binding.etMeetingName.text.equals("")) Toast.makeText(this, "코드를 입력해주세요.", Toast.LENGTH_SHORT).show()
+            else if (code !in meetingList) Toast.makeText(this, "잘못된 코드입니다.", Toast.LENGTH_SHORT).show()
             else {
                 //TODO(미팅에 유저 추가)
-                val code = binding.etMeetingName.text.toString()
-
                 val time = ArrayList<String>()
                 val mDate = getMeetingDate(code)
                 for (i in mDate) {
-                    time.add("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+                    time.add("0000000000000000")
                 }
 
                 val user = newUser(getUid(), getUserName(), time, false)
