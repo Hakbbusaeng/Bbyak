@@ -24,6 +24,19 @@ class RetrieveMeetingActivity : AppCompatActivity() {
             if(binding.etMeetingName.text.equals("")) Toast.makeText(this, "코드를 입력해주세요.", Toast.LENGTH_SHORT).show()
             else {
                 //TODO(미팅에 유저 추가)
+                val code = binding.etMeetingName.text.toString()
+
+                val time = ArrayList<String>()
+                val mDate = getMeetingDate(code)
+                for (i in mDate) {
+                    time.add("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+                }
+
+                val user = newUser(getUid(), getUserName(), time, false)
+
+                usersRef.child(getUid()).child("meeting").child(code).setValue(code)
+                meetingsRef.child(code).child("user").child(getUid()).setValue(user)
+
                 getInvitedMeetingList()
                 setRecyclerView()
             }
@@ -35,18 +48,11 @@ class RetrieveMeetingActivity : AppCompatActivity() {
 
     private fun getInvitedMeetingList(){
         //TODO(뺙 목록 가져오기)
-        meetings.add(Meeting("abc", "학술제 회의", "ㅁㅁㅁ", true))
-        meetings.add(Meeting("abc1", "축제 회의", "ㅇㅇㅇ", false))
-        meetings.add(Meeting("abc2", "캡스톤 회의", "ㅋㅋㅋ", false))
-        meetings.add(Meeting("abc3", "회의", "ㄷㄷㄷ", false))
-        meetings.add(Meeting("abc4", "회의", "ㄱㄱㄱ", true))
-        meetings.add(Meeting("abc5", "학술제 회의", "ㅁㅁㅁ", true))
-        meetings.add(Meeting("abc6", "축제 회의", "ㅇㅇㅇ", false))
-        meetings.add(Meeting("abc7", "캡스톤 회의", "ㅋㅋㅋ", false))
-        meetings.add(Meeting("abc8", "회의", "ㄷㄷㄷ", false))
-        meetings.add(Meeting("abc9", "회의", "ㄱㄱㄱ", true))
-        meetings.add(Meeting("abc10", "학술제 회의", "ㅁㅁㅁ", true))
-        meetings.add(Meeting("abc11", "축제 회의", "ㅇㅇㅇ", false))
+        val meetingList = getUserMeeting()
+        for (code in meetingList) {
+            val meeting = getMeeting(code)
+            meetings.add(meeting)
+        }
     }
 
     private fun setRecyclerView() {
@@ -56,8 +62,9 @@ class RetrieveMeetingActivity : AppCompatActivity() {
 }
 
 class Meeting(
-    val code: String,
-    val name: String,
-    val creator: String,
-    val isManager: Boolean
+    var code: String,
+    var name: String,
+    var creator: String,
+    var isMaster: Boolean,
+    var isDone: Boolean
 )

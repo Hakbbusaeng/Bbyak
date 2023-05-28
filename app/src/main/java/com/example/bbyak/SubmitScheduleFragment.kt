@@ -49,14 +49,14 @@ class SubmitScheduleFragment : Fragment() {
     ): View? {
         binding = FragmentSubmitScheduleBinding.inflate(inflater)
 
-        getCalendar()
-        setTableList()
-        setEnabledDate()
-
         meetingCode = arguments?.getString("meetingCode")
         val meetingName = arguments?.getString("meetingName")
         val meetingCreator = arguments?.getString("meetingCreator")
         binding.tvMeetingName.text = "$meetingName by $meetingCreator"
+
+        getCalendar()
+        setTableList()
+        setEnabledDate()
 
         //set first page
         currentCal = cals[0]
@@ -107,10 +107,10 @@ class SubmitScheduleFragment : Fragment() {
 
     private fun getCalendar() {
         //TODO(날짜 세팅) meetingCode 이용
-        cals.add(MyCalendar(2023, 5, 3))
-        cals.add(MyCalendar(2023, 5, 7))
-        cals.add(MyCalendar(2023, 5, 15))
-        cals.add(MyCalendar(2023, 5, 25))
+        val dateList = getMeetingDate(meetingCode.toString())
+        for (date in dateList) {
+            cals.add(MyCalendar(date.first, date.second, date.third))
+        }
 
         //요일, 스케줄 세팅
         for (item in cals) {
@@ -120,15 +120,16 @@ class SubmitScheduleFragment : Fragment() {
     }
 
     private fun getSchedule(str: String): String {
-        //TODO(요일별 스케줄 가져오기) 예시 데이터
+        //TODO(요일별 스케줄 가져오기)
+        val sch = getUserSchedule()
         return when (str) {
-            "월" -> "0010110101011101"
-            "화" -> "1010111011010111"
-            "수" -> "1010100001001011"
-            "목" -> "1111110000000000"
-            "금" -> "1101011111000000"
-            "토" -> "1010111011010111"
-            "일" -> "1101011111000000"
+            "월" -> sch[0]
+            "화" -> sch[1]
+            "수" -> sch[2]
+            "목" -> sch[3]
+            "금" -> sch[4]
+            "토" -> sch[5]
+            "일" -> sch[6]
             else -> ""
         }
     }

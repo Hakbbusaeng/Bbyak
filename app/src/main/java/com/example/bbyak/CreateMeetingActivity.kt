@@ -61,9 +61,6 @@ class CreateMeetingActivity : AppCompatActivity() {
         }
     }
 
-    data class User(val uid: String, val name: String, val time: List<String>?, val master: Boolean)
-    data class Meeting(val id: String, val name: String, val date: List<String>, val done: Boolean)   //user: 나중에 수정하기
-
     private fun createMeeting() {
         // Meeting Id
         val mId = meetingsRef.push().key.toString()
@@ -89,12 +86,12 @@ class CreateMeetingActivity : AppCompatActivity() {
         // Meeting User(master)
         val time = ArrayList<String>()
         for (i in mDate) {
-            time.add("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+            time.add("0000000000000000")
         }
-        var master = User(getUid(), getUserName(), time, true)
+        var master = newUser(getUid(), getUserName(), time, true)
 
         // Add Meeting
-        val newMeeting = Meeting(mId, mName, mDate, false)
+        val newMeeting = newMeeting(mId, mName, mDate, getUserName(), false)
         meetingsRef.child(mId).setValue(newMeeting)
         meetingsRef.child(mId).child("user").child(getUid()).setValue(master)
 
