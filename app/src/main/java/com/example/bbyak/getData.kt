@@ -99,9 +99,9 @@ fun toUserSchedule(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
 
     val schedule = ArrayList<String>()
     for (i in arrSelectedTime) {
-        schedule.add(i.joinToString("") { it.toString() })
+        schedule.add(i.joinToString(""))
     }
-
+    println("schedule: $schedule")
     return schedule
 }
 
