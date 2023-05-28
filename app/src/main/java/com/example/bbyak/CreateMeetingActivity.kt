@@ -86,7 +86,7 @@ class CreateMeetingActivity : AppCompatActivity() {
         // Meeting User(master)
         val time = ArrayList<String>()
         for (i in mDate) {
-            time.add("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0")
+            time.add("0000000000000000")
         }
         var master = newUser(getUid(), getUserName(), time, true)
 

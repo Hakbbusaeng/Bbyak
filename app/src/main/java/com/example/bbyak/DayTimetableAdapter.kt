@@ -16,7 +16,7 @@ class DayTimetableAdapter(
     private val isScheduleSaved: Boolean
 ) : RecyclerView.Adapter<DayTimetableAdapter.ItemViewHolder>() {
 
-    private val selectedTime = initialTime.split(",").map { num -> num.toInt() }.toMutableList()
+    private val selectedTime = initialTime.toCharArray().map { Character.getNumericValue(it) }.toMutableList()
 
     inner class ItemViewHolder(private val binding: ItemTableBinding) :
         RecyclerView.ViewHolder(binding.root) {

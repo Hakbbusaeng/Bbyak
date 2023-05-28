@@ -71,7 +71,7 @@ fun getUserSchedule(): List<String> = runBlocking {
     returnUserSchedule()
 }
 fun toSelectedTime(): ArrayList<Pair<Int, Int>> {
-    val schedule = ArrayList<Pair<Int, Int>>()
+    val selectedTime = ArrayList<Pair<Int, Int>>()
 
     val uSch = getUserSchedule()
     //println("uSch: $uSch")
@@ -82,13 +82,13 @@ fun toSelectedTime(): ArrayList<Pair<Int, Int>> {
     for (i in uSchInt) {
        var time = 8
        for (j in i) {
-            if (j == 1) schedule.add(Pair(day, time))
+            if (j == 1) selectedTime.add(Pair(day, time))
             time += 1
         }
         day += 1
     }
     //println("schedule: $schedule")
-    return schedule
+    return selectedTime
 }
 fun toUserSchedule(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
     val arrSelectedTime = MutableList(7){ mutableListOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) }
