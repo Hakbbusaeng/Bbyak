@@ -21,7 +21,7 @@ class RetrieveMeetingAdapter(
             binding.tvMeetingName.text = dataList[position].name
             binding.tvMeetingCreator.text = "by ${dataList[position].creator}"
 
-            if (!dataList[position].isMaster) binding.tvMaster.visibility = View.GONE
+            if (!dataList[position].isManager) binding.tvMaster.visibility = View.GONE
 
             binding.root.setOnClickListener {
                 context.startActivity(
@@ -32,7 +32,7 @@ class RetrieveMeetingAdapter(
                         putExtra("meetingCode", dataList[position].code)
                         putExtra("meetingName", dataList[position].name)
                         putExtra("meetingCreator", dataList[position].creator)
-                        putExtra("isManager", dataList[position].isMaster)
+                        putExtra("isManager", dataList[position].isManager)
                     }
                 )
             }
