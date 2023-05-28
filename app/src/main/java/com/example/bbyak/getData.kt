@@ -27,7 +27,7 @@ fun getUid(): String {
 }
 
 // 유저 이름
-suspend fun returnUserName(): String {
+private suspend fun returnUserName(): String {
     val uid = getUid()
 
     return withContext(Dispatchers.IO) {
@@ -45,7 +45,7 @@ fun getUserName(): String = runBlocking {
 }
 
 // 유저 스케줄
-suspend fun returnUserSchedule(): List<String> {
+private suspend fun returnUserSchedule(): List<String> {
     val uid = getUid()
 
     return withContext(Dispatchers.IO) {
@@ -87,7 +87,7 @@ fun getUserSchedule(): ArrayList<Pair<Int, Int>> = runBlocking {
     //println("schedule: $schedule")
     schedule
 }
-fun returnSelectedTime(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
+fun getSelectedTime(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
     val arrSelectedTime = MutableList(7){ mutableListOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) }
 
     for (i in selectedTime) {
@@ -103,7 +103,7 @@ fun returnSelectedTime(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<Strin
 }
 
 // 유저 미팅 리스트
-suspend fun returnUserMeeting(): List<String>{
+private suspend fun returnUserMeeting(): List<String>{
     val uid = getUid()
 
     val meetingList = ArrayList<String>()
@@ -129,7 +129,7 @@ fun getUserMeeting(): List<String> = runBlocking {
 }
 
 // 미팅 정보
-suspend fun returnMeeting(code: String): Meeting{
+private suspend fun returnMeeting(code: String): Meeting{
     var meeting = Meeting(code, "", "", false, false)
 
     val ref = meetingsRef.child(code)
@@ -174,7 +174,7 @@ fun getMeeting(code: String): Meeting = runBlocking {
 }
 
 // 미팅 날짜
-suspend fun returnMeetingDate(code: String): List<String>{
+private suspend fun returnMeetingDate(code: String): List<String>{
     val meetingDate = ArrayList<String>()
 
     return withContext(Dispatchers.IO) {
@@ -193,6 +193,19 @@ suspend fun returnMeetingDate(code: String): List<String>{
         meetingDate
     }
 }
-fun getMeetingDate(code: String): List<String> = runBlocking {
-    returnMeetingDate(code)
+fun getMeetingDate(code: String): List<Triple<Int, Int, Int>> = runBlocking {
+    val dateList = ArrayList<Triple<Int, Int, Int>>()
+    val mDate = returnMeetingDate(code)
+
+    for (d in mDate) {
+        val dateParts = d.split("/")
+        val year = dateParts[0].toInt()
+        val month = dateParts[1].toInt()
+        val day = dateParts[2].toInt()
+        val date = Triple(year, month, day)
+
+        dateList.add(date)
+    }
+
+    dateList
 }
