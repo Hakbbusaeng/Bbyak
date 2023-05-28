@@ -75,7 +75,7 @@ fun toSelectedTime(): ArrayList<Pair<Int, Int>> {
 
     val uSch = getUserSchedule()
     //println("uSch: $uSch")
-    val uSchInt = uSch.map { it.split(",").map { num -> num.toInt() }}
+    val uSchInt = uSch.map { it.map { digit -> digit.toString().toInt() } }
     //println("uSchInt: $uSchInt")
 
     var day = 1
@@ -99,9 +99,9 @@ fun toUserSchedule(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
 
     val schedule = ArrayList<String>()
     for (i in arrSelectedTime) {
-        schedule.add(i.joinToString(",") { it.toString() })
+        schedule.add(i.joinToString(""))
     }
-
+    println("schedule: $schedule")
     return schedule
 }
 
