@@ -19,8 +19,9 @@ val database = Firebase.database
 val usersRef = database.getReference("Users")
 val meetingsRef = database.getReference("Meetings")
 
-data class newUser(val uid: String, val name: String, val time: List<String>?, val master: Boolean)
-data class newMeeting(val id: String, val name: String, val date: List<String>, val creator: String, val done: Boolean)
+data class mUser(val uid: String, val name: String, val master: Boolean)
+data class uMeeting(val code: String, val time: List<String>, val submit: Boolean)
+data class newMeeting(val code: String, val name: String, val date: List<String>, val creator: String, val done: Boolean)
 
 fun getUid(): String {
     return user?.uid.toString()
@@ -82,7 +83,7 @@ fun toSelectedTime(): ArrayList<Pair<Int, Int>> {
     for (i in uSchInt) {
        var time = 8
        for (j in i) {
-            if (j == 1) selectedTime.add(Pair(day, time))
+            if (j == 0) selectedTime.add(Pair(day, time))
             time += 1
         }
         day += 1
@@ -91,10 +92,10 @@ fun toSelectedTime(): ArrayList<Pair<Int, Int>> {
     return selectedTime
 }
 fun toUserSchedule(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
-    val arrSelectedTime = MutableList(7){ mutableListOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) }
+    val arrSelectedTime = MutableList(7){ mutableListOf(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1) }
 
     for (i in selectedTime) {
-        arrSelectedTime[i.first-1][i.second-8] = 1
+        arrSelectedTime[i.first-1][i.second-8] = 0
     }
 
     val schedule = ArrayList<String>()
@@ -117,7 +118,7 @@ private suspend fun returnUserMeeting(): List<String>{
 
         if (snapshot.exists()) {
             for (childSnapshot in snapshot.children) {
-                val meeting = childSnapshot.value.toString()
+                val meeting = childSnapshot.key.toString()
                 meetingList.add(meeting)
             }
         } else {
@@ -137,6 +138,7 @@ private suspend fun returnMeeting(code: String): Meeting{
 
     val ref = meetingsRef.child(code)
     return withContext(Dispatchers.IO) {
+
         val nameRef = ref.child("name")
         val nameSnap = nameRef.get().await()
         if (nameSnap.exists()) {

@@ -31,13 +31,13 @@ class RetrieveMeetingActivity : AppCompatActivity() {
                 val time = ArrayList<String>()
                 val mDate = getMeetingDate(code)
                 for (i in mDate) {
-                    time.add("0000000000000000")
+                    time.add("1111111111111111")
                 }
+                val user = mUser(getUid(), getUserName(), true)
+                val meeting = uMeeting(code, time, false)
 
-                val user = newUser(getUid(), getUserName(), time, false)
-
-                usersRef.child(getUid()).child("meeting").child(code).setValue(code)
                 meetingsRef.child(code).child("user").child(getUid()).setValue(user)
+                usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
 
                 getInvitedMeetingList()
                 setRecyclerView()

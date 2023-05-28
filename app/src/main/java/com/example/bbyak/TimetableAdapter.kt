@@ -18,7 +18,7 @@ class TimetableAdapter(
     inner class ItemViewHolder(private val binding: ItemTableBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: String, position: Int) {
-            println("selectedTime: $selectedTime")
+            //println("selectedTime: $selectedTime")
             val params = LinearLayout.LayoutParams(width, height)
             binding.tvTable.layoutParams = params
             binding.tvTable.text = data

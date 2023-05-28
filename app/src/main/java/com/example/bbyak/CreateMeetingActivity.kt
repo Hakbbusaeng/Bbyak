@@ -63,8 +63,8 @@ class CreateMeetingActivity : AppCompatActivity() {
 
     private fun createMeeting() {
         // Meeting Id
-        val mId = meetingsRef.push().key.toString()
-        Log.e("meeting key", mId)
+        val code = meetingsRef.push().key.toString()
+        Log.e("meeting key", code)
 
         // Meeting Name
         val mName = cmFragment.binding.editTextMeetingName.text.toString()
@@ -86,19 +86,20 @@ class CreateMeetingActivity : AppCompatActivity() {
         // Meeting User(master)
         val time = ArrayList<String>()
         for (i in mDate) {
-            time.add("0000000000000000")
+            time.add("1111111111111111")
         }
-        var master = newUser(getUid(), getUserName(), time, true)
+        val user = mUser(getUid(), getUserName(), true)
+        val meeting = uMeeting(code, time, false)
 
         // Add Meeting
-        val newMeeting = newMeeting(mId, mName, mDate, getUserName(), false)
-        meetingsRef.child(mId).setValue(newMeeting)
-        meetingsRef.child(mId).child("user").child(getUid()).setValue(master)
+        val newMeeting = newMeeting(code, mName, mDate, getUserName(), false)
+        meetingsRef.child(code).setValue(newMeeting)
+        meetingsRef.child(code).child("user").child(getUid()).setValue(user)
 
         // Add User Data
-        usersRef.child(getUid()).child("meeting").child(mId).setValue(mId)
+        usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
 
         //get code
-        meetingCode = mId
+        meetingCode = code
     }
 }
