@@ -16,7 +16,14 @@ import java.util.*
 class HomeFragment : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    val selected = ArrayList<CalendarDay>()
+
+    private val cals = ArrayList<Calendar>()
+    private val calDays = ArrayList<CalendarDay>()
+    private val curDate by lazy {
+        Calendar.getInstance().apply {
+            timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -24,43 +31,43 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(layoutInflater)
 
-        val curTimeZone = Calendar.getInstance()
+        initDateList()
+        initCalendarDayList()
 
-        val timeZone = TimeZone.getTimeZone("Asia/Seoul")
-        curTimeZone.timeZone = timeZone
-
-        val cur = Calendar.getInstance()
-        cur.set(Calendar.YEAR, curTimeZone.get(Calendar.YEAR))
-        cur.set(Calendar.MONTH, curTimeZone.get(Calendar.MONTH))
-        cur.set(Calendar.DAY_OF_MONTH, curTimeZone.get(Calendar.DAY_OF_MONTH))
-
-        setHighlightDate(cur)
+        setHighlightDate(curDate)
 
         binding.calendarView.setOnDayClickListener(object : OnDayClickListener {
             override fun onDayClick(eventDay: EventDay) {
-                selected.removeFirstOrNull()
-                val clickedDayCalendar = eventDay.calendar
-                setHighlightDate(clickedDayCalendar)
+                setHighlightDate(eventDay.calendar)
             }
         })
 
         return binding.root
     }
 
-    fun setHighlightDate(cal: Calendar){
+    private fun initDateList() {
+        //TODO(날짜 데이터 세팅)
+        cals.add(Calendar.getInstance().apply { set(2023, 4, 26) })
+        cals.add(Calendar.getInstance().apply { set(2023, 4, 27) })
+        cals.add(Calendar.getInstance().apply { set(2023, 4, 28) })
+        cals.add(Calendar.getInstance().apply { set(2023, 4, 29) })
+    }
 
-        binding.calendarView.setCalendarDays(selected as List<CalendarDay>)
-        val cal1 = Calendar.getInstance().apply { set(2023,3,3) }
-        val cal2 = Calendar.getInstance().apply { set(2023,3,7) }
-        val cal3 = Calendar.getInstance().apply { set(2023,3,15) }
-        val cal4 = Calendar.getInstance().apply { set(2023,3,25) }
+    private fun initCalendarDayList() {
+        calDays.clear()
+        for (item in cals) {
+            calDays.add(CalendarDay(item).apply {
+                backgroundResource = R.drawable.light_yellow_dot
+            })
+        }
+        binding.calendarView.setCalendarDays(calDays)
+    }
 
-        val c = ArrayList<CalendarDay>()
-        c.add( CalendarDay(cal).apply { backgroundResource = R.drawable.yellow_dot })
-        c.add( CalendarDay(cal1).apply { backgroundResource = R.drawable.light_yellow_dot })
-        c.add( CalendarDay(cal2).apply { backgroundResource = R.drawable.light_yellow_dot })
-        c.add( CalendarDay(cal3).apply { backgroundResource = R.drawable.light_yellow_dot })
-        c.add( CalendarDay(cal4).apply { backgroundResource = R.drawable.light_yellow_dot })
-        binding.calendarView.setCalendarDays(c as List<CalendarDay>)
+    private fun setHighlightDate(cal: Calendar) {
+        val new = ArrayList(calDays)
+        new.add(0, CalendarDay(cal).apply {
+            backgroundResource = R.drawable.yellow_dot
+        })
+        binding.calendarView.setCalendarDays(new)
     }
 }
