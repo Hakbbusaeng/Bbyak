@@ -19,7 +19,7 @@ val database = Firebase.database
 val usersRef = database.getReference("Users")
 val meetingsRef = database.getReference("Meetings")
 
-data class mUser(val uid: String, val name: String, val master: Boolean)
+data class mUser(val uid: String, val name: String, val manager: Boolean)
 data class uMeeting(val code: String, val time: List<String>, val submit: Boolean)
 data class newMeeting(val code: String, val name: String, val date: List<String>, val creator: String, val done: Boolean)
 
@@ -28,8 +28,7 @@ fun getUid(): String {
 }
 
 // 유저 이름
-private suspend fun returnUserName(): String {
-    val uid = getUid()
+private suspend fun returnUserName(uid: String): String {
 
     return withContext(Dispatchers.IO) {
         val ref = usersRef.child(uid).child("name")
@@ -41,8 +40,8 @@ private suspend fun returnUserName(): String {
         }
     }
 }
-fun getUserName(): String = runBlocking {
-    returnUserName()
+fun getUserName(uid: String): String = runBlocking {
+    returnUserName(uid)
 }
 
 // 유저 스케줄
@@ -155,10 +154,10 @@ private suspend fun returnMeeting(code: String): Meeting{
             ""
         }
 
-        val masterRef = ref.child("user").child(getUid()).child("master")
-        val masterSnap = masterRef.get().await()
-        if (masterSnap.exists()) {
-            meeting.isMaster = masterSnap.value as Boolean
+        val managerRef = ref.child("user").child(getUid()).child("manager")
+        val managerSnap = managerRef.get().await()
+        if (managerSnap.exists()) {
+            meeting.isManager = managerSnap.value as Boolean
         } else {
             ""
         }
@@ -237,4 +236,40 @@ private suspend fun returnMeetingList(): List<String>{
 }
 fun getMeetingList(): List<String> = runBlocking {
     returnMeetingList()
+}
+
+// 제출한 유저 리스트
+private suspend fun returnSubmitUserList(code: String): List<String>{
+    val userList = ArrayList<String>()
+    val submitUserList = ArrayList<String>()
+
+    return withContext(Dispatchers.IO) {
+
+        val mRef = meetingsRef.child(code).child("user")
+        val mSnapshot = mRef.get().await()
+        if (mSnapshot.exists()) {
+            for (childSnapshot in mSnapshot.children) {
+                val uid = childSnapshot.key.toString()
+                userList.add(uid)
+            }
+        } else {
+            ""
+        }
+
+        for (uid in userList) {
+            val uRef = usersRef.child(uid).child("meeting").child(code).child("submit")
+            val uSnapshot = uRef.get().await()
+            if (uSnapshot.exists()) {
+                val submit = uSnapshot.value as Boolean
+                if (submit) submitUserList.add(uid)
+            } else {
+                ""
+            }
+        }
+
+        submitUserList
+    }
+}
+fun getSubmitUserList(code: String): List<String> = runBlocking {
+    returnSubmitUserList(code)
 }

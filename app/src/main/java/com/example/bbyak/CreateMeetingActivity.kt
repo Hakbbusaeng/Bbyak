@@ -88,11 +88,11 @@ class CreateMeetingActivity : AppCompatActivity() {
         for (i in mDate) {
             time.add("1111111111111111")
         }
-        val user = mUser(getUid(), getUserName(), true)
+        val user = mUser(getUid(), getUserName(getUid()), true)
         val meeting = uMeeting(code, time, false)
 
         // Add Meeting
-        val newMeeting = newMeeting(code, mName, mDate, getUserName(), false)
+        val newMeeting = newMeeting(code, mName, mDate, getUserName(getUid()), false)
         meetingsRef.child(code).setValue(newMeeting)
         meetingsRef.child(code).child("user").child(getUid()).setValue(user)
 

@@ -33,7 +33,7 @@ class RetrieveMeetingActivity : AppCompatActivity() {
                 for (i in mDate) {
                     time.add("1111111111111111")
                 }
-                val user = mUser(getUid(), getUserName(), true)
+                val user = mUser(getUid(), getUserName(getUid()), true)
                 val meeting = uMeeting(code, time, false)
 
                 meetingsRef.child(code).child("user").child(getUid()).setValue(user)
@@ -67,6 +67,6 @@ class Meeting(
     var code: String,
     var name: String,
     var creator: String,
-    var isMaster: Boolean,
+    var isManager: Boolean,
     var isDone: Boolean
 )

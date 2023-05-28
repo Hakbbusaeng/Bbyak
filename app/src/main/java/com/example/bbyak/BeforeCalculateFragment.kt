@@ -53,10 +53,16 @@ class BeforeCalculateFragment : Fragment() {
 
     private fun getSubmitNameList() {
         //TODO(제출 명단 가져오기) meetingCode 사용
+        val submitUserList = getSubmitUserList(meetingCode.toString())
+        val submitUserNameList = ArrayList<String>()
+        for (uid in submitUserList) {
+            submitUserNameList.add(getUserName(uid))
+        }
+
         list = ArrayList<String>().apply {
-            add("김ㅇㅇ"); add("이ㅇㅇ"); add("박ㅇㅇ"); add("최ㅇㅇ"); add("하ㅇㅇ"); add("한ㅇㅇ"); add("권ㅇㅇ")
-            add("김ㅇㅇ"); add("이ㅇㅇ"); add("박ㅇㅇ"); add("최ㅇㅇ"); add("하ㅇㅇ"); add("한ㅇㅇ"); add("권ㅇㅇ")
-            add("김ㅇㅇ"); add("이ㅇㅇ"); add("박ㅇㅇ"); add("최ㅇㅇ"); add("하ㅇㅇ"); add("한ㅇㅇ"); add("권ㅇㅇ")
+            for (name in submitUserNameList) {
+                add(name)
+            }
         }
         binding.tvHeadCount.text = "${list.size}명"
     }
