@@ -101,12 +101,8 @@ class CalculateMeetingActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.item_manage -> {
-                if (!isScheduleSaved) Toast.makeText(this, "스케줄을 제출해 주세요", Toast.LENGTH_SHORT)
-                    .show()
-                else {
-                    currentFragment = FRAGMENT_BEFORE_CALCULATE
-                    switchFragment(currentFragment)
-                }
+                currentFragment = FRAGMENT_BEFORE_CALCULATE
+                switchFragment(currentFragment)
                 true
             }
             else -> super.onOptionsItemSelected(item)
