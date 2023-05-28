@@ -16,7 +16,7 @@ class DayTimetableAdapter(
     private val isScheduleSaved: Boolean
 ) : RecyclerView.Adapter<DayTimetableAdapter.ItemViewHolder>() {
 
-    private val selectedTime = initialTime.toCharArray().map { Character.getNumericValue(it) }.toMutableList()
+    private val selectedTime = initialTime.split(",").map { num -> num.toInt() }.toMutableList()
 
     inner class ItemViewHolder(private val binding: ItemTableBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -28,7 +28,7 @@ class DayTimetableAdapter(
             if (position == 0) {
                 binding.tvTable.textSize = 12f
                 binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
-            } else if (selectedTime[time] == 0) binding.tvTable.setBackgroundResource(R.drawable.table_cell_disabled)
+            } else if (selectedTime[time] == 1) binding.tvTable.setBackgroundResource(R.drawable.table_cell_disabled)
             else if (!isScheduleSaved) binding.tvTable.setBackgroundResource(R.drawable.table_cell_enabled)
             else binding.tvTable.setBackgroundResource(R.drawable.table_cell_selected)
 
