@@ -273,3 +273,27 @@ private suspend fun returnSubmitUserList(code: String): List<String>{
 fun getSubmitUserList(code: String): List<String> = runBlocking {
     returnSubmitUserList(code)
 }
+
+// 유저 미팅 시간
+private suspend fun returnUserTime(uid: String, code: String): List<String>{
+    val timeList = ArrayList<String>()
+
+    return withContext(Dispatchers.IO) {
+        val ref = usersRef.child(uid).child("meeting").child(code).child("time")
+        val snapshot = ref.get().await()
+
+        if (snapshot.exists()) {
+            for (childSnapshot in snapshot.children) {
+                val time = childSnapshot.value.toString()
+                timeList.add(time)
+            }
+        } else {
+            ""
+        }
+
+        timeList
+    }
+}
+fun getUserTime(uid: String, code: String): List<String> = runBlocking {
+    returnUserTime(uid, code)
+}

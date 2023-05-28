@@ -54,8 +54,14 @@ class CalculateMeetingActivity : AppCompatActivity() {
         binding.btConfirm.setOnClickListener {
             when (currentFragment) {
                 FRAGMENT_SUBMIT_SCHEDULE -> {
-                    if (!isScheduleSaved) binding.btConfirm.text = "수정하기"
-                    else binding.btConfirm.text = "제출하기"
+                    if (!isScheduleSaved) {
+                        binding.btConfirm.text = "수정하기"
+                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("submit").setValue(true)
+                    }
+                    else {
+                        binding.btConfirm.text = "제출하기"
+                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("submit").setValue(false)
+                    }
                     isScheduleSaved = !isScheduleSaved
                     ssFragment.refreshTimeTable()
                 }
