@@ -13,7 +13,7 @@ class TimetableAdapter(
 ) : RecyclerView.Adapter<TimetableAdapter.ItemViewHolder>() {
 
     //시간, 요일
-    private val selectedTime = getUserSchedule()
+    private val selectedTime = toSelectedTime()
 
     inner class ItemViewHolder(private val binding: ItemTableBinding) :
         RecyclerView.ViewHolder(binding.root) {

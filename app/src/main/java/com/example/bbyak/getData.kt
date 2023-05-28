@@ -67,10 +67,13 @@ private suspend fun returnUserSchedule(): List<String> {
 
     }
 }
-fun getUserSchedule(): ArrayList<Pair<Int, Int>> = runBlocking {
+fun getUserSchedule(): List<String> = runBlocking {
+    returnUserSchedule()
+}
+fun toSelectedTime(): ArrayList<Pair<Int, Int>> {
     val schedule = ArrayList<Pair<Int, Int>>()
 
-    val uSch = returnUserSchedule()
+    val uSch = getUserSchedule()
     //println("uSch: $uSch")
     val uSchInt = uSch.map { it.split(",").map { num -> num.toInt() }}
     //println("uSchInt: $uSchInt")
@@ -85,9 +88,9 @@ fun getUserSchedule(): ArrayList<Pair<Int, Int>> = runBlocking {
         day += 1
     }
     //println("schedule: $schedule")
-    schedule
+    return schedule
 }
-fun getSelectedTime(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
+fun toUserSchedule(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
     val arrSelectedTime = MutableList(7){ mutableListOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) }
 
     for (i in selectedTime) {
