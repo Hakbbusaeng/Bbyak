@@ -54,7 +54,15 @@ class CalculateMeetingActivity : AppCompatActivity() {
         binding.btConfirm.setOnClickListener {
             when (currentFragment) {
                 FRAGMENT_SUBMIT_SCHEDULE -> {
-                    if (!isScheduleSaved) binding.btConfirm.text = "수정하기"
+                    if (!isScheduleSaved) {
+                        binding.btConfirm.text = "수정하기"
+                        //TODO(스케줄 제출 코드)
+                        //스케쥴 가져오기
+                        val list = ssFragment.getMySchedule()
+                        for(i in list){
+                            Log.e("schedule", "${i.year}/${i.month}/${i.day} - ${i.schedule}")
+                        }
+                    }
                     else binding.btConfirm.text = "제출하기"
                     isScheduleSaved = !isScheduleSaved
                     ssFragment.refreshTimeTable()
