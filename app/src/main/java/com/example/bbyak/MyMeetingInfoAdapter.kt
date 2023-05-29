@@ -1,6 +1,7 @@
 package com.example.bbyak
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,11 @@ class MyMeetingInfoAdapter(
             for (i in 0 until 5) {
                 if (i < list.size) tvList[i].text = list[i][0].toString()
                 else tvList[i].visibility = View.GONE
+            }
+
+            profileListBinding.btViewNameList.setOnClickListener {
+                context.startActivity(Intent(context, SubmitNameListActivity::class.java)
+                    .apply { putStringArrayListExtra("nameList", dataList[position].participants) })
             }
         }
     }
