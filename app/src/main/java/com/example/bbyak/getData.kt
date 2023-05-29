@@ -212,3 +212,27 @@ fun getMeetingDate(code: String): List<Triple<Int, Int, Int>> = runBlocking {
 
     dateList
 }
+
+// 미팅 리스트
+private suspend fun returnMeetingList(): List<String>{
+    val meetingList = ArrayList<String>()
+
+    return withContext(Dispatchers.IO) {
+        val ref = meetingsRef
+        val snapshot = ref.get().await()
+
+        if (snapshot.exists()) {
+            for (childSnapshot in snapshot.children) {
+                val code = childSnapshot.key.toString()
+                meetingList.add(code)
+            }
+        } else {
+            ""
+        }
+
+        meetingList
+    }
+}
+fun getMeetingList(): List<String> = runBlocking {
+    returnMeetingList()
+}
