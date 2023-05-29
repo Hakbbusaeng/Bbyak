@@ -178,12 +178,17 @@ class SubmitScheduleFragment : Fragment() {
     }
 
     fun setMyCalendarSchedule(cal: MyCalendar?) {
-        cal?.let { cal.schedule = adapter.getSelectedTime() }
+        cal?.let { it.schedule = adapter.getSelectedTime() }
     }
 
     fun refreshTimeTable(){
         currentCal?.let { setMyCalendarSchedule(it) }
         currentCal?.let { setTimeTable(it) }
+    }
+
+    fun getMySchedule(): ArrayList<MyCalendar>{
+        currentCal?.let { setMyCalendarSchedule(it) }
+        return cals
     }
 
 }
