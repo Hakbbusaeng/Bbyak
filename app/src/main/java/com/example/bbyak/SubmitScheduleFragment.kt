@@ -43,6 +43,13 @@ class SubmitScheduleFragment : Fragment() {
 
     var currentCal: MyCalendar? = null
 
+    private val curDate by lazy {
+        Calendar.getInstance().apply {
+            timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        }
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -99,7 +106,7 @@ class SubmitScheduleFragment : Fragment() {
     private val tableList = ArrayList<String>()
 
     private fun setTableList() {
-        tableList.add("${cals[0].month}/${cals[0].day}(${cals[0].dayOfWeek})")
+        tableList.add("")
         for (i in 8..23) {
             tableList.add(i.toString())
         }
@@ -170,6 +177,7 @@ class SubmitScheduleFragment : Fragment() {
 
     private fun setEnabledDate() {
         val c = ArrayList<CalendarDay>()
+        c.add(CalendarDay(curDate).apply { labelColor = R.color.slight_light_grey })
         for (i in cals) {
             val cal = Calendar.getInstance().apply { set(i.year, i.month - 1, i.day) }
             c.add(CalendarDay(cal).apply { labelColor = R.color.black })

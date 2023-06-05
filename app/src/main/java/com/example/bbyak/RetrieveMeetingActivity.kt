@@ -13,6 +13,7 @@ class RetrieveMeetingActivity : AppCompatActivity() {
 
     private val meetings = ArrayList<Meeting>()
 
+    private lateinit var adapter: RetrieveMeetingAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,12 +21,17 @@ class RetrieveMeetingActivity : AppCompatActivity() {
 
         binding.toolbar.title = "뺙 조회하기"
 
-        binding.btAddMeeting.setOnClickListener{
+        binding.btAddMeeting.setOnClickListener {
             val code = binding.etMeetingName.text.toString()
             val meetingList = getMeetingList()
 
-            if(binding.etMeetingName.text.equals("")) Toast.makeText(this, "코드를 입력해주세요.", Toast.LENGTH_SHORT).show()
-            else if (code !in meetingList) Toast.makeText(this, "잘못된 코드입니다.", Toast.LENGTH_SHORT).show()
+            if (binding.etMeetingName.text.equals("")) Toast.makeText(
+                this,
+                "코드를 입력해주세요.",
+                Toast.LENGTH_SHORT
+            ).show()
+            else if (code !in meetingList) Toast.makeText(this, "잘못된 코드입니다.", Toast.LENGTH_SHORT)
+                .show()
             else {
                 //TODO(미팅에 유저 추가)
                 val time = ArrayList<String>()
@@ -40,7 +46,7 @@ class RetrieveMeetingActivity : AppCompatActivity() {
                 meetingsRef.child(code).child("user").child(getUid()).setValue(user)
 
                 getInvitedMeetingList()
-                setRecyclerView()
+                adapter.notifyDataSetChanged()
             }
         }
         getInvitedMeetingList()
@@ -48,9 +54,10 @@ class RetrieveMeetingActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    private fun getInvitedMeetingList(){
+    private fun getInvitedMeetingList() {
         //TODO(뺙 목록 가져오기)
         val meetingList = getUserMeeting()
+        meetings.clear()
         for (code in meetingList) {
             val meeting = getMeeting(code)
             meetings.add(meeting)
@@ -59,7 +66,8 @@ class RetrieveMeetingActivity : AppCompatActivity() {
 
     private fun setRecyclerView() {
         binding.rvRetrieveMeeting.layoutManager = LinearLayoutManager(this)
-        binding.rvRetrieveMeeting.adapter = RetrieveMeetingAdapter(meetings, this)
+        adapter = RetrieveMeetingAdapter(meetings, this)
+        binding.rvRetrieveMeeting.adapter = adapter
     }
 }
 
@@ -70,3 +78,4 @@ class Meeting(
     var isMaster: Boolean,
     var isDone: Boolean
 )
+
