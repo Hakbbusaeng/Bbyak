@@ -106,7 +106,7 @@ class SubmitScheduleFragment : Fragment() {
     private val tableList = ArrayList<String>()
 
     private fun setTableList() {
-        tableList.add("${cals[0].month}/${cals[0].day}(${cals[0].dayOfWeek})")
+        tableList.add("")
         for (i in 8..23) {
             tableList.add(i.toString())
         }
