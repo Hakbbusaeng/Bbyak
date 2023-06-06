@@ -56,14 +56,6 @@ class CalculateMeetingActivity : AppCompatActivity() {
                 FRAGMENT_SUBMIT_SCHEDULE -> {
                     if (!isScheduleSaved) {
                         binding.btConfirm.text = "수정하기"
-<<<<<<< HEAD
-                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("submit").setValue(true)
-                    }
-                    else {
-                        binding.btConfirm.text = "제출하기"
-                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("submit").setValue(false)
-                    }
-=======
                         //TODO(스케줄 제출 코드)
                         //스케쥴 가져오기
                         val list = ssFragment!!.getMySchedule()
@@ -71,7 +63,6 @@ class CalculateMeetingActivity : AppCompatActivity() {
                             Log.e("schedule", "${i.year}/${i.month}/${i.day} - ${i.schedule}")
                         }
                     } else binding.btConfirm.text = "제출하기"
->>>>>>> 6415bdbca6afa94deed57f68991ec08090bb7226
                     isScheduleSaved = !isScheduleSaved
                     ssFragment?.refreshTimeTable()
                 }
