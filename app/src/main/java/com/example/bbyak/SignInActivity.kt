@@ -68,7 +68,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun initSchedule(): MutableList<String> {
-        return MutableList(7) { "0000000000000000" }
+        return MutableList(7) { "1111111111111111" }
     }
 
     private fun updateUI(user: FirebaseUser?) {
