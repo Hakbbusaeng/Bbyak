@@ -18,9 +18,9 @@ class CalculateMeetingActivity : AppCompatActivity() {
     private val FRAGMENT_CALCULATE_MEETING = 3
 
     private lateinit var binding: ActivityCalculateMeetingBinding
-    private lateinit var ssFragment: SubmitScheduleFragment
-    private lateinit var bcFragment: BeforeCalculateFragment
-    private lateinit var cmFragment: CalculateMeetingFragment
+    private var ssFragment: SubmitScheduleFragment? = null
+    private var bcFragment: BeforeCalculateFragment? = null
+    private var cmFragment: CalculateMeetingFragment? = null
 
     private lateinit var menuManage: MenuItem
 
@@ -56,14 +56,24 @@ class CalculateMeetingActivity : AppCompatActivity() {
                 FRAGMENT_SUBMIT_SCHEDULE -> {
                     if (!isScheduleSaved) {
                         binding.btConfirm.text = "수정하기"
+<<<<<<< HEAD
                         usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("submit").setValue(true)
                     }
                     else {
                         binding.btConfirm.text = "제출하기"
                         usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("submit").setValue(false)
                     }
+=======
+                        //TODO(스케줄 제출 코드)
+                        //스케쥴 가져오기
+                        val list = ssFragment!!.getMySchedule()
+                        for (i in list) {
+                            Log.e("schedule", "${i.year}/${i.month}/${i.day} - ${i.schedule}")
+                        }
+                    } else binding.btConfirm.text = "제출하기"
+>>>>>>> 6415bdbca6afa94deed57f68991ec08090bb7226
                     isScheduleSaved = !isScheduleSaved
-                    ssFragment.refreshTimeTable()
+                    ssFragment?.refreshTimeTable()
                 }
                 FRAGMENT_BEFORE_CALCULATE -> {
                     switchFragment(FRAGMENT_CALCULATE_MEETING)
@@ -78,7 +88,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
     }
 
     private fun confirmMeetingTime() {
-        val timeZone = cmFragment.getSelectedTimeZone()
+        val timeZone = cmFragment?.getSelectedTimeZone()
         if (timeZone == null) Toast.makeText(this, "일정을 선택해 주세요.", Toast.LENGTH_SHORT).show()
         else {
             Log.e(
@@ -121,16 +131,23 @@ class CalculateMeetingActivity : AppCompatActivity() {
             FRAGMENT_SUBMIT_SCHEDULE -> {
                 binding.toolbar.title = "내 스케줄 제출"
                 showMenu = isManager
-                supportFragmentManager.commit {
-                    setReorderingAllowed(true)
+                if (ssFragment == null) {
                     ssFragment = SubmitScheduleFragment()
-                    ssFragment.arguments = Bundle().apply {
+                    ssFragment!!.arguments = Bundle().apply {
                         putString("meetingCode", meetingCode)
                         putString("meetingName", meetingName)
                         putString("meetingCreator", meetingCreator)
                     }
-                    replace(binding.fragmentContainer.id, ssFragment)
+                    supportFragmentManager.beginTransaction()
+                        .add(binding.fragmentContainer.id, ssFragment!!).commit()
                 }
+                if (ssFragment != null) supportFragmentManager.beginTransaction().show(ssFragment!!)
+                    .commit()
+                if (bcFragment != null) supportFragmentManager.beginTransaction().hide(bcFragment!!)
+                    .commit()
+                if (cmFragment != null) supportFragmentManager.beginTransaction().hide(cmFragment!!)
+                    .commit()
+
                 if (!isScheduleSaved) binding.btConfirm.text = "제출하기"
                 else binding.btConfirm.text = "수정하기"
                 binding.ivGradient.visibility = View.GONE
@@ -138,28 +155,42 @@ class CalculateMeetingActivity : AppCompatActivity() {
             FRAGMENT_BEFORE_CALCULATE -> {
                 binding.toolbar.title = meetingName
                 showMenu = false
-                supportFragmentManager.commit {
-                    setReorderingAllowed(true)
+                if (bcFragment == null) {
                     bcFragment = BeforeCalculateFragment()
-                    bcFragment.arguments = Bundle().apply {
+                    bcFragment!!.arguments = Bundle().apply {
                         putString("meetingCode", meetingCode)
                     }
-                    replace(binding.fragmentContainer.id, bcFragment)
+                    supportFragmentManager.beginTransaction()
+                        .add(binding.fragmentContainer.id, bcFragment!!).commit()
                 }
+                if (ssFragment != null) supportFragmentManager.beginTransaction().hide(ssFragment!!)
+                    .commit()
+                if (bcFragment != null) supportFragmentManager.beginTransaction().show(bcFragment!!)
+                    .commit()
+                if (cmFragment != null) supportFragmentManager.beginTransaction().hide(cmFragment!!)
+                    .commit()
+
                 binding.btConfirm.text = "날짜 계산하기"
                 binding.ivGradient.visibility = View.GONE
             }
             FRAGMENT_CALCULATE_MEETING -> {
                 binding.toolbar.title = meetingName
                 showMenu = false
-                supportFragmentManager.commit {
-                    setReorderingAllowed(true)
+                if (cmFragment == null) {
                     cmFragment = CalculateMeetingFragment()
-                    cmFragment.arguments = Bundle().apply {
+                    cmFragment!!.arguments = Bundle().apply {
                         putString("meetingCode", meetingCode)
                     }
-                    replace(binding.fragmentContainer.id, cmFragment)
+                    supportFragmentManager.beginTransaction()
+                        .add(binding.fragmentContainer.id, cmFragment!!).commit()
                 }
+                if (ssFragment != null) supportFragmentManager.beginTransaction().hide(ssFragment!!)
+                    .commit()
+                if (bcFragment != null) supportFragmentManager.beginTransaction().hide(bcFragment!!)
+                    .commit()
+                if (cmFragment != null) supportFragmentManager.beginTransaction().show(cmFragment!!)
+                    .commit()
+
                 binding.btConfirm.text = "확정하기"
                 binding.ivGradient.visibility = View.VISIBLE
             }

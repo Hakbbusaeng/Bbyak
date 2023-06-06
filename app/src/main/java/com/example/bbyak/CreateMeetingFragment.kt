@@ -14,16 +14,18 @@ class CreateMeetingFragment : Fragment() {
 
     lateinit var binding: FragmentCreateMeetingBinding
 
+    private val curDate by lazy {
+        Calendar.getInstance().apply {
+            timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentCreateMeetingBinding.inflate(layoutInflater)
 
-        val curDate = Calendar.getInstance()
-        val timeZone = TimeZone.getTimeZone("Asia/Seoul")
-        curDate.timeZone = timeZone
-        curDate.set(Calendar.DAY_OF_MONTH, curDate.get(Calendar.DAY_OF_MONTH) - 1)
         Log.e(
             "curDate",
             "${curDate.get(Calendar.YEAR)}/${curDate.get(Calendar.MONTH) + 1}/${curDate.get(Calendar.DAY_OF_MONTH)}"
