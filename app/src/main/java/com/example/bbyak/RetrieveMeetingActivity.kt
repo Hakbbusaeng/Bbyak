@@ -47,6 +47,7 @@ class RetrieveMeetingActivity : AppCompatActivity() {
 
                 getInvitedMeetingList()
                 adapter.notifyDataSetChanged()
+                binding.etMeetingName.text.clear()
             }
         }
         getInvitedMeetingList()
