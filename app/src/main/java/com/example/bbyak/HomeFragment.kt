@@ -96,7 +96,7 @@ class HomeFragment : Fragment() {
     private fun initMeetingList() {
         //TODO(미팅 정보 세팅)
         //예시 데이터
-        val participants = ArrayList<String>().apply {
+        /*val participants = ArrayList<String>().apply {
             add("춘식이");add("라이언");add("어피치");add("튜브")
         }
         meetings.add(MyMeeting(2023, 4, 26, "aa", "aaa", 15, 20, participants))
@@ -106,7 +106,13 @@ class HomeFragment : Fragment() {
         meetings.add(MyMeeting(2023, 4, 27, "bb", "bbb", 20, 24, participants))
         meetings.add(MyMeeting(2023, 4, 28, "cc", "ccc", 10, 12, participants))
         meetings.add(MyMeeting(2023, 4, 29, "dd", "ddd", 10, 13, participants))
-        meetings.add(MyMeeting(2023, 5, 1, "ee", "eee", 14, 17, participants))
+        meetings.add(MyMeeting(2023, 5, 1, "ee", "eee", 14, 17, participants))*/
+
+        val bbyakList = getUserBbyak(getUid())
+
+        for (bbyak in bbyakList) {
+            meetings.add(bbyak)
+        }
         initDateList()
     }
 
