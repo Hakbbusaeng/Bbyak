@@ -59,9 +59,15 @@ class CalculateMeetingActivity : AppCompatActivity() {
                         //TODO(스케줄 제출 코드)
                         //스케쥴 가져오기
                         val list = ssFragment!!.getMySchedule()
+
+                        val time = ArrayList<String>()
                         for (i in list) {
                             Log.e("schedule", "${i.year}/${i.month}/${i.day} - ${i.schedule}")
+                            time.add(i.schedule)
                         }
+                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("time").setValue(time)
+                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("submit").setValue(true)
+
                     } else binding.btConfirm.text = "제출하기"
                     isScheduleSaved = !isScheduleSaved
                     ssFragment?.refreshTimeTable()
@@ -89,6 +95,12 @@ class CalculateMeetingActivity : AppCompatActivity() {
             finish()
             Toast.makeText(this, "뺙 확정 완료", Toast.LENGTH_SHORT).show()
             //TODO(일정 확정하기) meetingCode 이용
+            val time = confirmedTime(timeZone.year, timeZone.month, timeZone.day, timeZone.start, timeZone.end)
+            val submitUserList = getSubmitUserList(meetingCode.toString())
+            for (uid in submitUserList) {
+                usersRef.child(uid).child("bbyak").child(meetingCode.toString()).setValue(time)
+            }
+            meetingsRef.child(meetingCode.toString()).child("done").setValue(true)
         }
     }
 

@@ -22,6 +22,7 @@ val meetingsRef = database.getReference("Meetings")
 data class mUser(val uid: String, val name: String, val manager: Boolean)
 data class uMeeting(val code: String, val time: List<String>, val submit: Boolean)
 data class newMeeting(val code: String, val name: String, val date: List<String>, val creator: String, val done: Boolean)
+data class confirmedTime(val year: Int, val month: Int, val day: Int, val start: Int, val end: Int)
 
 fun getUid(): String {
     return user?.uid.toString()
