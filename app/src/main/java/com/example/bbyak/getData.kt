@@ -298,3 +298,22 @@ private suspend fun returnUserTime(uid: String, code: String): List<String>{
 fun getUserTime(uid: String, code: String): List<String> = runBlocking {
     returnUserTime(uid, code)
 }
+
+// 유저 미팅 스케줄 제출 여부
+private suspend fun returnUserSubmit(uid: String, code: String): Boolean {
+
+    return withContext(Dispatchers.IO) {
+        val ref = usersRef.child(uid).child("meeting").child(code).child("submit")
+        val snapshot = ref.get().await()
+
+        if (snapshot.exists()) {
+            val submit = snapshot.value
+            submit == true
+        } else {
+            false
+        }
+    }
+}
+fun getUserSubmit(uid: String, code: String): Boolean = runBlocking {
+    returnUserSubmit(uid, code)
+}
