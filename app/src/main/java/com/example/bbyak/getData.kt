@@ -240,7 +240,7 @@ fun getMeetingList(): List<String> = runBlocking {
 }
 
 // 제출한 유저 리스트
-private suspend fun returnSubmitUserList(code: String): List<String>{
+private suspend fun returnSubmitUserList(code: String): ArrayList<String>{
     val userList = ArrayList<String>()
     val submitUserList = ArrayList<String>()
 
@@ -271,7 +271,7 @@ private suspend fun returnSubmitUserList(code: String): List<String>{
         submitUserList
     }
 }
-fun getSubmitUserList(code: String): List<String> = runBlocking {
+fun getSubmitUserList(code: String): ArrayList<String> = runBlocking {
     returnSubmitUserList(code)
 }
 
@@ -316,4 +316,105 @@ private suspend fun returnUserSubmit(uid: String, code: String): Boolean {
 }
 fun getUserSubmit(uid: String, code: String): Boolean = runBlocking {
     returnUserSubmit(uid, code)
+}
+
+// 유저 확정된 뺙 정보
+private suspend fun returnUserBbyak(uid: String): List<MyMeeting> {
+    val bbyakList = ArrayList<MyMeeting>()
+    val meetingList = ArrayList<String>()
+
+    return withContext(Dispatchers.IO) {
+        val ref = usersRef.child(uid).child("bbyak")
+        val snapshot = ref.get().await()
+
+        if (snapshot.exists()) {
+            for (childSnapshot in snapshot.children) {
+                val code = childSnapshot.key.toString()
+                meetingList.add(code)
+            }
+        } else {
+            false
+        }
+
+        for (code in meetingList) {
+            var year = 0
+            var month = 0
+            var day = 0
+            var start = 0
+            var end = 0
+            var name = ""
+            var creator = ""
+            val partUid = getSubmitUserList(code)
+            val part = ArrayList<String>()
+
+            for (uid in partUid) {
+                part.add(getUserName(uid))
+            }
+
+            val yRef = usersRef.child(uid).child("bbyak").child(code).child("year")
+            val ySnapshot = yRef.get().await()
+            if (ySnapshot.exists()) {
+                year = ySnapshot.value.toString().toInt()
+            } else {
+                ""
+            }
+
+            val mRef = usersRef.child(uid).child("bbyak").child(code).child("month")
+            val mSnapshot = mRef.get().await()
+            if (mSnapshot.exists()) {
+                month = mSnapshot.value.toString().toInt()
+            } else {
+                ""
+            }
+
+
+            val dRef = usersRef.child(uid).child("bbyak").child(code).child("day")
+            val dSnapshot = dRef.get().await()
+            if (dSnapshot.exists()) {
+                day = dSnapshot.value.toString().toInt()
+            } else {
+                ""
+            }
+
+
+            val sRef = usersRef.child(uid).child("bbyak").child(code).child("start")
+            val sSnapshot = sRef.get().await()
+            if (sSnapshot.exists()) {
+                start = sSnapshot.value.toString().toInt()
+            } else {
+                ""
+            }
+
+            val eRef = usersRef.child(uid).child("bbyak").child(code).child("end")
+            val eSnapshot = eRef.get().await()
+            if (eSnapshot.exists()) {
+                end = eSnapshot.value.toString().toInt()
+            } else {
+                ""
+            }
+
+            val nRef = meetingsRef.child(code).child("name")
+            val nSnapshot = nRef.get().await()
+            if (nSnapshot.exists()) {
+                name = nSnapshot.value.toString()
+            } else {
+                ""
+            }
+
+            val cRef = meetingsRef.child(code).child("creator")
+            val cSnapshot = cRef.get().await()
+            if (cSnapshot.exists()) {
+                creator = nSnapshot.value.toString()
+            } else {
+                ""
+            }
+
+            bbyakList.add(MyMeeting(year, month-1, day, name, creator, start, end, part))
+        }
+
+        bbyakList
+    }
+}
+fun getUserBbyak(uid: String): List<MyMeeting> = runBlocking {
+    returnUserBbyak(uid)
 }
