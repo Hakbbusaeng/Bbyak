@@ -2,8 +2,10 @@ package com.example.bbyak
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bbyak.databinding.ActivityRetrieveMeetingBinding
@@ -49,15 +51,19 @@ class RetrieveMeetingActivity : AppCompatActivity() {
                 usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
 
                 lifecycleScope.launch {
+                    binding.progressBar.visibility = View.VISIBLE
                     getInvitedMeetingList().join()
+                    binding.etMeetingName.text.clear()
                     adapter.notifyDataSetChanged()
+                    binding.progressBar.visibility = View.GONE
                 }
-                binding.etMeetingName.text.clear()
             }
         }
         lifecycleScope.launch {
+            binding.progressBar.visibility = View.VISIBLE
             getInvitedMeetingList().join()
             setRecyclerView()
+            binding.progressBar.visibility = View.GONE
         }
 
         setContentView(binding.root)
