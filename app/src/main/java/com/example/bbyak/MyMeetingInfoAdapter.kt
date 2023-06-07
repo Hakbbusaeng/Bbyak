@@ -23,11 +23,12 @@ class MyMeetingInfoAdapter(
         fun bind(position: Int) {
             binding.tvMeetingName.text = dataList[position].name
             binding.tvMeetingCreator.text = "by ${dataList[position].creator}"
-            binding.tvMeetingTime.text = "${getAMPM(dataList[position].startTime)}-${getAMPM(dataList[position].endTime)}"
+            binding.tvMeetingTime.text =
+                "${getAMPM(dataList[position].startTime)} - ${getAMPM(dataList[position].endTime)}"
             setProfileList(position)
         }
 
-        private fun setProfileList(position: Int){
+        private fun setProfileList(position: Int) {
             val tvList = listOf(
                 profileListBinding.profile1,
                 profileListBinding.profile2,
@@ -40,7 +41,9 @@ class MyMeetingInfoAdapter(
             else {
                 profileListBinding.tvHeadCount.visibility = View.GONE
                 profileListBinding.flProfileList.layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    1f
                 )
             }
             for (i in 0 until 5) {
@@ -50,16 +53,22 @@ class MyMeetingInfoAdapter(
 
             profileListBinding.btViewNameList.setOnClickListener {
                 context.startActivity(Intent(context, SubmitNameListActivity::class.java)
-                    .apply { putStringArrayListExtra("nameList", dataList[position].participants) })
+                    .apply {
+                        putStringArrayListExtra(
+                            "nameList",
+                            dataList[position].participants
+                        )
+                    })
             }
         }
     }
 
     private fun getAMPM(_time: Int): String {
         var time = _time + 8
-        return if (time < 12) "오전 ${DecimalFormat("00").format(time)}:00"
+        return if (time in 0..11) "오전 ${DecimalFormat("00").format(time)}:00"
         else {
             time -= 12
+            if (time == 0) time = 12
             "오후 ${DecimalFormat("00").format(time)}:00"
         }
     }

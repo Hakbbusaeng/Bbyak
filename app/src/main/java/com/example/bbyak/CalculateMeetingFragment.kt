@@ -5,9 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.applandeo.materialcalendarview.CalendarDay
 import com.example.bbyak.databinding.FragmentCalculateMeetingBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -32,75 +36,54 @@ class CalculateMeetingFragment : Fragment() {
 
         meetingCode = arguments?.getString("meetingCode")
 
-        //유저 스케줄 정보 세팅
-        initUserScheduleList()
+        lifecycleScope.launch {
+            binding.progressBar.visibility = View.VISIBLE
+            //유저 스케줄 정보 세팅
+            initUserScheduleList().join()
 
-        //가능한 날짜 계산
-        possibleTimes = getPossibleTime(users)
+            withContext(Dispatchers.Main) {
+                //가능한 날짜 계산
+                possibleTimes = getPossibleTime(users)
+            }
+            //캘린더 초기화
+            initCalendarDayList()
 
-        //캘린더 초기화
-        initCalendarDayList()
-
-        //리사이클러뷰 세팅
-        setRecyclerView()
+            //리사이클러뷰 세팅
+            setRecyclerView()
+            
+            binding.progressBar.visibility = View.GONE
+        }
 
         return binding.root
     }
 
-    private fun initUserScheduleList() {
+    private suspend fun initUserScheduleList() =
+        lifecycleScope.launch {
 
-        //TODO(제출한 유저 스케줄 users에 세팅) meetingCode 사용
-        val submitUserList = getSubmitUserList(meetingCode.toString())
-        val dateList = getMeetingDate(meetingCode.toString())
+            val submitUserList = getSubmitUserList(meetingCode.toString())
+            val dateList = getMeetingDate(meetingCode.toString())
 
-        users = ArrayList<User>()
+            users = ArrayList<User>()
 
-        for (uid in submitUserList) {
-            val timeList = getUserTime(uid, meetingCode.toString())
-            val userScheduleList = ArrayList<Schedule>()
+            for (uid in submitUserList) {
+                val timeList = getUserTime(uid, meetingCode.toString())
+                val userScheduleList = ArrayList<Schedule>()
 
-            var i = 0
-            for (date in dateList) {
-                userScheduleList.apply {
-                    add(Schedule(date.first, date.second, date.third, timeList[i]))
+                var i = 0
+                for (date in dateList) {
+                    userScheduleList.apply {
+                        add(Schedule(date.first, date.second, date.third, timeList[i]))
+                    }
+                    i += 1
                 }
-                i += 1
-            }
 
-            println("userScheduleList: $userScheduleList")
-            users.apply {
-                add(User(getUserName(uid), userScheduleList))
+                println("userScheduleList: $userScheduleList")
+                users.apply {
+                    add(User(getUserName(uid), userScheduleList))
+                }
             }
+            for (item in users) userNames.add(item.name)
         }
-        //예시 데이터
-        /*val exTime = "1111111111111111"
-        val exTime2 = "1111111100000000"
-        val exSchedule =
-            ArrayList<Schedule>().apply {
-                add(Schedule(2023, 5, 18, exTime))
-                add(Schedule(2023, 5, 19, exTime))
-                add(Schedule(2023, 5, 20, exTime))
-                add(Schedule(2023, 5, 21, exTime))
-            }
-        val exSchedule2 =
-            ArrayList<Schedule>().apply {
-                add(Schedule(2023, 5, 18, exTime2))
-                add(Schedule(2023, 5, 19, exTime2))
-                add(Schedule(2023, 5, 20, exTime2))
-                add(Schedule(2023, 5, 21, exTime2))
-            }
-        users = ArrayList<User>().apply {
-            add(User("AAA", exSchedule))
-            add(User("BBB", exSchedule))
-            add(User("CCC", exSchedule))
-            add(User("DDD", exSchedule))
-            add(User("EEE", exSchedule))
-            add(User("FFF", exSchedule))
-            add(User("GGG", exSchedule))
-            add(User("HHH", exSchedule2))
-        }*/
-        for (item in users) userNames.add(item.name)
-    }
 
     private fun setRecyclerView() {
         binding.rvCalculateMeetingResult.layoutManager = LinearLayoutManager(context)
@@ -138,7 +121,7 @@ class CalculateMeetingFragment : Fragment() {
         selectedTimeZone = possibleTimes[position]
     }
 
-    fun getSelectedTimeZone(): PossibleTimeZone?{
+    fun getSelectedTimeZone(): PossibleTimeZone? {
         return selectedTimeZone
     }
 }

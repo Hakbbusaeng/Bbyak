@@ -2,10 +2,15 @@ package com.example.bbyak
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bbyak.databinding.ActivityRetrieveMeetingBinding
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class RetrieveMeetingActivity : AppCompatActivity() {
 
@@ -33,38 +38,48 @@ class RetrieveMeetingActivity : AppCompatActivity() {
             else if (code !in meetingList) Toast.makeText(this, "잘못된 코드입니다.", Toast.LENGTH_SHORT)
                 .show()
             else {
-                //TODO(미팅에 유저 추가)
-                val time = ArrayList<String>()
-                val mDate = getMeetingDate(code)
-                for (i in mDate) {
-                    time.add("1111111111111111")
+                lifecycleScope.launch {
+                    binding.progressBar.visibility = View.VISIBLE
+                    val time = ArrayList<String>()
+                    val mDate = getMeetingDate(code)
+                    for (i in mDate) {
+                        time.add("1111111111111111")
+                    }
+                    val user = mUser(getUid(), getUserName(getUid()), false)
+                    val meeting = uMeeting(code, time, false)
+
+                    meetingsRef.child(code).child("user").child(getUid()).setValue(user)
+                    usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
+
+                    getInvitedMeetingList().join()
+                    binding.etMeetingName.text.clear()
+                    adapter.notifyDataSetChanged()
+                    binding.progressBar.visibility = View.GONE
                 }
-                val user = mUser(getUid(), getUserName(getUid()), false)
-                val meeting = uMeeting(code, time, false)
-
-                meetingsRef.child(code).child("user").child(getUid()).setValue(user)
-                usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
-
-                getInvitedMeetingList()
-                adapter.notifyDataSetChanged()
-                binding.etMeetingName.text.clear()
             }
         }
-        getInvitedMeetingList()
-        setRecyclerView()
+        lifecycleScope.launch {
+            binding.progressBar.visibility = View.VISIBLE
+            getInvitedMeetingList().join()
+            setRecyclerView()
+            binding.progressBar.visibility = View.GONE
+        }
+
         setContentView(binding.root)
     }
 
-    private fun getInvitedMeetingList() {
+    private fun getInvitedMeetingList() =
         //TODO(뺙 목록 가져오기)
-        val meetingList = getUserMeeting()
-        meetings.clear()
-        for (code in meetingList) {
-            val meeting = getMeeting(code)
-            meetings.add(meeting)
+        lifecycleScope.launch {
+            val meetingList = getUserMeeting()
+            meetings.clear()
+            for (code in meetingList) {
+                val meeting = getMeeting(code)
+                meetings.add(meeting)
+            }
+            meetings.reverse()
+
         }
-        meetings.reverse()
-    }
 
     private fun setRecyclerView() {
         binding.rvRetrieveMeeting.layoutManager = LinearLayoutManager(this)

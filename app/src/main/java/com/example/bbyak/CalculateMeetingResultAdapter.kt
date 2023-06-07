@@ -72,9 +72,10 @@ class CalculateMeetingResultAdapter(
 
     private fun getAMPM(_time: Int): String {
         var time = _time + 8
-        return if (time < 12) "오전 ${DecimalFormat("00").format(time)}:00"
+        return if (time in 0..11) "오전 ${DecimalFormat("00").format(time)}:00"
         else {
             time -= 12
+            if (time == 0) time = 12
             "오후 ${DecimalFormat("00").format(time)}:00"
         }
     }

@@ -16,8 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -37,20 +36,15 @@
             android:text="by 김세종"
             android:textColor="#E6000000"
             android:textSize="12sp" />
-
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/tvMeetingTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="오후 3:40"
-            android:textColor="#B3000000" />
-
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tvMeetingTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="오후 3:40"
+        android:textColor="#B3000000" />
 
     <LinearLayout
         android:layout_width="match_parent"
