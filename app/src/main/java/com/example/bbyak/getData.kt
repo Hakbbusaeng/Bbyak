@@ -8,10 +8,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 lateinit var auth: FirebaseAuth
 val user = Firebase.auth.currentUser
@@ -128,8 +126,12 @@ private suspend fun returnUserMeeting(): List<String>{
         meetingList
     }
 }
-fun getUserMeeting(): List<String> = runBlocking {
-    returnUserMeeting()
+suspend fun getUserMeeting(): List<String>{
+    lateinit var deferred: Deferred<List<String>>
+    coroutineScope{
+        deferred = async{returnUserMeeting()}
+    }
+    return deferred.await()
 }
 
 // 미팅 정보
@@ -174,9 +176,15 @@ private suspend fun returnMeeting(code: String): Meeting{
         meeting
     }
 }
-fun getMeeting(code: String): Meeting = runBlocking {
-    returnMeeting(code)
+
+suspend fun getMeeting(code: String): Meeting{
+    lateinit var deferred: Deferred<Meeting>
+    coroutineScope{
+        deferred = async{returnMeeting(code)}
+    }
+    return deferred.await()
 }
+
 
 // 미팅 날짜
 private suspend fun returnMeetingDate(code: String): List<String>{
@@ -415,6 +423,11 @@ private suspend fun returnUserBbyak(uid: String): List<MyMeeting> {
         bbyakList
     }
 }
-fun getUserBbyak(uid: String): List<MyMeeting> = runBlocking {
-    returnUserBbyak(uid)
+suspend fun getUserBbyak(uid: String): List<MyMeeting>{
+    lateinit var deferred: Deferred<List<MyMeeting>>
+    coroutineScope{
+        deferred = async{returnUserBbyak(uid)}
+    }
+    return deferred.await()
 }
+

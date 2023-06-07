@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bbyak.databinding.ActivityRetrieveMeetingBinding
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class RetrieveMeetingActivity : AppCompatActivity() {
 
@@ -45,26 +48,33 @@ class RetrieveMeetingActivity : AppCompatActivity() {
                 meetingsRef.child(code).child("user").child(getUid()).setValue(user)
                 usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
 
-                getInvitedMeetingList()
-                adapter.notifyDataSetChanged()
+                lifecycleScope.launch {
+                    getInvitedMeetingList().join()
+                    adapter.notifyDataSetChanged()
+                }
                 binding.etMeetingName.text.clear()
             }
         }
-        getInvitedMeetingList()
-        setRecyclerView()
+        lifecycleScope.launch {
+            getInvitedMeetingList().join()
+            setRecyclerView()
+        }
+
         setContentView(binding.root)
     }
 
-    private fun getInvitedMeetingList() {
+    private fun getInvitedMeetingList() =
         //TODO(뺙 목록 가져오기)
-        val meetingList = getUserMeeting()
-        meetings.clear()
-        for (code in meetingList) {
-            val meeting = getMeeting(code)
-            meetings.add(meeting)
+        lifecycleScope.launch {
+            val meetingList = getUserMeeting()
+            meetings.clear()
+            for (code in meetingList) {
+                val meeting = getMeeting(code)
+                meetings.add(meeting)
+            }
+            meetings.reverse()
+
         }
-        meetings.reverse()
-    }
 
     private fun setRecyclerView() {
         binding.rvRetrieveMeeting.layoutManager = LinearLayoutManager(this)
