@@ -2,14 +2,12 @@ package com.example.bbyak
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.UserHandle
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.commit
-import androidx.fragment.app.replace
+import androidx.lifecycle.lifecycleScope
 import com.example.bbyak.databinding.ActivityCreateMeetingBinding
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -48,58 +46,63 @@ class CreateMeetingActivity : AppCompatActivity() {
                 }
             }
             FRAGMENT_FINISH_CREATE_MEETING -> {
-                createMeeting()
-                supportFragmentManager.commit {
-                    setReorderingAllowed(true)
-                    fcmFragment = FinishCreateMeetingFragment()
-                    fcmFragment.arguments = Bundle().apply { putString("code", meetingCode) }
-                    replace(binding.fragmentContainer.id, fcmFragment)
-                    binding.btConfirm.text = "완료"
-                    binding.btConfirm.setOnClickListener { finish() }
+                lifecycleScope.launch {
+                    binding.progressBar.visibility = View.VISIBLE
+                    createMeeting().join()
+                    binding.progressBar.visibility = View.GONE
+                    supportFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        fcmFragment = FinishCreateMeetingFragment()
+                        fcmFragment.arguments = Bundle().apply { putString("code", meetingCode) }
+                        replace(binding.fragmentContainer.id, fcmFragment)
+                        binding.btConfirm.text = "완료"
+                        binding.btConfirm.setOnClickListener { finish() }
+                    }
                 }
             }
         }
     }
 
-    private fun createMeeting() {
-        // Meeting Id
-        val code = meetingsRef.push().key.toString()
-        Log.e("meeting key", code)
+    private fun createMeeting() =
+        lifecycleScope.launch {
+            // Meeting Id
+            val code = meetingsRef.push().key.toString()
+            Log.e("meeting key", code)
 
-        // Meeting Name
-        val mName = cmFragment.binding.editTextMeetingName.text.toString()
-        Log.e("meeting name", mName)
+            // Meeting Name
+            val mName = cmFragment.binding.editTextMeetingName.text.toString()
+            Log.e("meeting name", mName)
 
-        // Meeting Date
-        val mDate = ArrayList<String>()
-        for (i in cmFragment.binding.selectCalendarView.selectedDates) {
-            val year = i.get(Calendar.YEAR)
-            val month = i.get(Calendar.MONTH) + 1
-            val day = i.get(Calendar.DAY_OF_MONTH)
-            val ymd = year.toString() + "/" + month.toString() + "/"+ day.toString()
+            // Meeting Date
+            val mDate = ArrayList<String>()
+            for (i in cmFragment.binding.selectCalendarView.selectedDates) {
+                val year = i.get(Calendar.YEAR)
+                val month = i.get(Calendar.MONTH) + 1
+                val day = i.get(Calendar.DAY_OF_MONTH)
+                val ymd = year.toString() + "/" + month.toString() + "/" + day.toString()
 
-            Log.e("selected date", ymd)
+                Log.e("selected date", ymd)
 
-            mDate.add(ymd)
+                mDate.add(ymd)
+            }
+
+            // Meeting User(master)
+            val time = ArrayList<String>()
+            for (i in mDate) {
+                time.add("1111111111111111")
+            }
+            val user = mUser(getUid(), getUserName(getUid()), true)
+            val meeting = uMeeting(code, time, false)
+
+            // Add Meeting
+            val newMeeting = newMeeting(code, mName, mDate, getUserName(getUid()), false)
+            meetingsRef.child(code).setValue(newMeeting)
+            meetingsRef.child(code).child("user").child(getUid()).setValue(user)
+
+            // Add User Data
+            usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
+
+            //get code
+            meetingCode = code
         }
-
-        // Meeting User(master)
-        val time = ArrayList<String>()
-        for (i in mDate) {
-            time.add("1111111111111111")
-        }
-        val user = mUser(getUid(), getUserName(getUid()), true)
-        val meeting = uMeeting(code, time, false)
-
-        // Add Meeting
-        val newMeeting = newMeeting(code, mName, mDate, getUserName(getUid()), false)
-        meetingsRef.child(code).setValue(newMeeting)
-        meetingsRef.child(code).child("user").child(getUid()).setValue(user)
-
-        // Add User Data
-        usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
-
-        //get code
-        meetingCode = code
-    }
 }
