@@ -63,6 +63,7 @@ class RetrieveMeetingActivity : AppCompatActivity() {
             val meeting = getMeeting(code)
             meetings.add(meeting)
         }
+        meetings.reverse()
     }
 
     private fun setRecyclerView() {

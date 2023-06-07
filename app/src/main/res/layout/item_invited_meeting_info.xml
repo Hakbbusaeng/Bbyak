@@ -3,6 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llMeetingInfo"
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_marginLeft="20dp"
@@ -10,10 +11,11 @@
     android:layout_marginRight="20dp"
     android:layout_marginBottom="10dp"
     android:background="@drawable/background_round5"
-    android:backgroundTint="#FFF2CF"
+    android:backgroundTint="@color/light_yellow"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="15dp">
+
     <TextView
         android:id="@+id/tvMaster"
         android:layout_width="20dp"
