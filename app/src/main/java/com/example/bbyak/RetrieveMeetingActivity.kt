@@ -47,6 +47,7 @@ class RetrieveMeetingActivity : AppCompatActivity() {
 
                 getInvitedMeetingList()
                 adapter.notifyDataSetChanged()
+                binding.etMeetingName.text.clear()
             }
         }
         getInvitedMeetingList()
@@ -62,6 +63,7 @@ class RetrieveMeetingActivity : AppCompatActivity() {
             val meeting = getMeeting(code)
             meetings.add(meeting)
         }
+        meetings.reverse()
     }
 
     private fun setRecyclerView() {
