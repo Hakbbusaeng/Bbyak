@@ -47,8 +47,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
         isManager = intent.getBooleanExtra("isManager", false)
 
         //TODO(이미 제출했는지 여부 설정)
-        //isScheduleSaved = true or
-        //getUserSubmit(getUid(), meetingCode.toString())
+        isScheduleSaved = getUserSubmit(getUid(), meetingCode.toString())
 
         switchFragment(currentFragment)
 
