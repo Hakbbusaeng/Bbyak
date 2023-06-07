@@ -110,6 +110,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
             menuManage = it.findItem(R.id.item_manage)
             menuManage.isVisible = showMenu
         }
+        super.onPrepareOptionsMenu(menu)
         return true
     }
 
@@ -135,6 +136,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
             FRAGMENT_SUBMIT_SCHEDULE -> {
                 binding.toolbar.title = "내 스케줄 제출"
                 showMenu = isManager
+                invalidateOptionsMenu()
                 if (ssFragment == null) {
                     ssFragment = SubmitScheduleFragment()
                     ssFragment!!.arguments = Bundle().apply {
@@ -159,6 +161,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
             FRAGMENT_BEFORE_CALCULATE -> {
                 binding.toolbar.title = meetingName
                 showMenu = false
+                invalidateOptionsMenu()
                 if (bcFragment == null) {
                     bcFragment = BeforeCalculateFragment()
                     bcFragment!!.arguments = Bundle().apply {
@@ -180,6 +183,7 @@ class CalculateMeetingActivity : AppCompatActivity() {
             FRAGMENT_CALCULATE_MEETING -> {
                 binding.toolbar.title = meetingName
                 showMenu = false
+                invalidateOptionsMenu()
                 if (cmFragment == null) {
                     cmFragment = CalculateMeetingFragment()
                     cmFragment!!.arguments = Bundle().apply {
