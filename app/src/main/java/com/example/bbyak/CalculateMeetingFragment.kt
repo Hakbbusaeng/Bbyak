@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.applandeo.materialcalendarview.CalendarDay
 import com.example.bbyak.databinding.FragmentCalculateMeetingBinding
 import java.util.*
+import kotlin.collections.ArrayList
 
 class CalculateMeetingFragment : Fragment() {
 
@@ -49,9 +50,30 @@ class CalculateMeetingFragment : Fragment() {
     private fun initUserScheduleList() {
 
         //TODO(제출한 유저 스케줄 users에 세팅) meetingCode 사용
+        val submitUserList = getSubmitUserList(meetingCode.toString())
+        val dateList = getMeetingDate(meetingCode.toString())
 
+        users = ArrayList<User>()
+
+        for (uid in submitUserList) {
+            val timeList = getUserTime(uid, meetingCode.toString())
+            val userScheduleList = ArrayList<Schedule>()
+
+            var i = 0
+            for (date in dateList) {
+                userScheduleList.apply {
+                    add(Schedule(date.first, date.second, date.third, timeList[i]))
+                }
+                i += 1
+            }
+
+            println("userScheduleList: $userScheduleList")
+            users.apply {
+                add(User(getUserName(uid), userScheduleList))
+            }
+        }
         //예시 데이터
-        val exTime = "1111111111111111"
+        /*val exTime = "1111111111111111"
         val exTime2 = "1111111100000000"
         val exSchedule =
             ArrayList<Schedule>().apply {
@@ -76,7 +98,7 @@ class CalculateMeetingFragment : Fragment() {
             add(User("FFF", exSchedule))
             add(User("GGG", exSchedule))
             add(User("HHH", exSchedule2))
-        }
+        }*/
         for (item in users) userNames.add(item.name)
     }
 

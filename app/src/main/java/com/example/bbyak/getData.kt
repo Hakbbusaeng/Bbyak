@@ -19,16 +19,17 @@ val database = Firebase.database
 val usersRef = database.getReference("Users")
 val meetingsRef = database.getReference("Meetings")
 
-data class newUser(val uid: String, val name: String, val time: List<String>?, val master: Boolean)
-data class newMeeting(val id: String, val name: String, val date: List<String>, val creator: String, val done: Boolean)
+data class mUser(val uid: String, val name: String, val manager: Boolean)
+data class uMeeting(val code: String, val time: List<String>, val submit: Boolean)
+data class newMeeting(val code: String, val name: String, val date: List<String>, val creator: String, val done: Boolean)
+data class confirmedTime(val year: Int, val month: Int, val day: Int, val start: Int, val end: Int)
 
 fun getUid(): String {
     return user?.uid.toString()
 }
 
 // 유저 이름
-private suspend fun returnUserName(): String {
-    val uid = getUid()
+private suspend fun returnUserName(uid: String): String {
 
     return withContext(Dispatchers.IO) {
         val ref = usersRef.child(uid).child("name")
@@ -40,8 +41,8 @@ private suspend fun returnUserName(): String {
         }
     }
 }
-fun getUserName(): String = runBlocking {
-    returnUserName()
+fun getUserName(uid: String): String = runBlocking {
+    returnUserName(uid)
 }
 
 // 유저 스케줄
@@ -82,7 +83,7 @@ fun toSelectedTime(): ArrayList<Pair<Int, Int>> {
     for (i in uSchInt) {
        var time = 8
        for (j in i) {
-            if (j == 1) selectedTime.add(Pair(day, time))
+            if (j == 0) selectedTime.add(Pair(day, time))
             time += 1
         }
         day += 1
@@ -91,10 +92,10 @@ fun toSelectedTime(): ArrayList<Pair<Int, Int>> {
     return selectedTime
 }
 fun toUserSchedule(selectedTime: ArrayList<Pair<Int, Int>>): ArrayList<String> {
-    val arrSelectedTime = MutableList(7){ mutableListOf(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) }
+    val arrSelectedTime = MutableList(7){ mutableListOf(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1) }
 
     for (i in selectedTime) {
-        arrSelectedTime[i.first-1][i.second-8] = 1
+        arrSelectedTime[i.first-1][i.second-8] = 0
     }
 
     val schedule = ArrayList<String>()
@@ -117,7 +118,7 @@ private suspend fun returnUserMeeting(): List<String>{
 
         if (snapshot.exists()) {
             for (childSnapshot in snapshot.children) {
-                val meeting = childSnapshot.value.toString()
+                val meeting = childSnapshot.key.toString()
                 meetingList.add(meeting)
             }
         } else {
@@ -137,6 +138,7 @@ private suspend fun returnMeeting(code: String): Meeting{
 
     val ref = meetingsRef.child(code)
     return withContext(Dispatchers.IO) {
+
         val nameRef = ref.child("name")
         val nameSnap = nameRef.get().await()
         if (nameSnap.exists()) {
@@ -153,10 +155,10 @@ private suspend fun returnMeeting(code: String): Meeting{
             ""
         }
 
-        val masterRef = ref.child("user").child(getUid()).child("master")
-        val masterSnap = masterRef.get().await()
-        if (masterSnap.exists()) {
-            meeting.isMaster = masterSnap.value as Boolean
+        val managerRef = ref.child("user").child(getUid()).child("manager")
+        val managerSnap = managerRef.get().await()
+        if (managerSnap.exists()) {
+            meeting.isManager = managerSnap.value as Boolean
         } else {
             ""
         }
@@ -235,4 +237,64 @@ private suspend fun returnMeetingList(): List<String>{
 }
 fun getMeetingList(): List<String> = runBlocking {
     returnMeetingList()
+}
+
+// 제출한 유저 리스트
+private suspend fun returnSubmitUserList(code: String): List<String>{
+    val userList = ArrayList<String>()
+    val submitUserList = ArrayList<String>()
+
+    return withContext(Dispatchers.IO) {
+
+        val mRef = meetingsRef.child(code).child("user")
+        val mSnapshot = mRef.get().await()
+        if (mSnapshot.exists()) {
+            for (childSnapshot in mSnapshot.children) {
+                val uid = childSnapshot.key.toString()
+                userList.add(uid)
+            }
+        } else {
+            ""
+        }
+
+        for (uid in userList) {
+            val uRef = usersRef.child(uid).child("meeting").child(code).child("submit")
+            val uSnapshot = uRef.get().await()
+            if (uSnapshot.exists()) {
+                val submit = uSnapshot.value as Boolean
+                if (submit) submitUserList.add(uid)
+            } else {
+                ""
+            }
+        }
+
+        submitUserList
+    }
+}
+fun getSubmitUserList(code: String): List<String> = runBlocking {
+    returnSubmitUserList(code)
+}
+
+// 유저 미팅 시간
+private suspend fun returnUserTime(uid: String, code: String): List<String>{
+    val timeList = ArrayList<String>()
+
+    return withContext(Dispatchers.IO) {
+        val ref = usersRef.child(uid).child("meeting").child(code).child("time")
+        val snapshot = ref.get().await()
+
+        if (snapshot.exists()) {
+            for (childSnapshot in snapshot.children) {
+                val time = childSnapshot.value.toString()
+                timeList.add(time)
+            }
+        } else {
+            ""
+        }
+
+        timeList
+    }
+}
+fun getUserTime(uid: String, code: String): List<String> = runBlocking {
+    returnUserTime(uid, code)
 }
