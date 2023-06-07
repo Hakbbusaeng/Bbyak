@@ -38,20 +38,19 @@ class RetrieveMeetingActivity : AppCompatActivity() {
             else if (code !in meetingList) Toast.makeText(this, "잘못된 코드입니다.", Toast.LENGTH_SHORT)
                 .show()
             else {
-                //TODO(미팅에 유저 추가)
-                val time = ArrayList<String>()
-                val mDate = getMeetingDate(code)
-                for (i in mDate) {
-                    time.add("1111111111111111")
-                }
-                val user = mUser(getUid(), getUserName(getUid()), false)
-                val meeting = uMeeting(code, time, false)
-
-                meetingsRef.child(code).child("user").child(getUid()).setValue(user)
-                usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
-
                 lifecycleScope.launch {
                     binding.progressBar.visibility = View.VISIBLE
+                    val time = ArrayList<String>()
+                    val mDate = getMeetingDate(code)
+                    for (i in mDate) {
+                        time.add("1111111111111111")
+                    }
+                    val user = mUser(getUid(), getUserName(getUid()), false)
+                    val meeting = uMeeting(code, time, false)
+
+                    meetingsRef.child(code).child("user").child(getUid()).setValue(user)
+                    usersRef.child(getUid()).child("meeting").child(code).setValue(meeting)
+
                     getInvitedMeetingList().join()
                     binding.etMeetingName.text.clear()
                     adapter.notifyDataSetChanged()

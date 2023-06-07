@@ -9,7 +9,9 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import androidx.lifecycle.lifecycleScope
 import com.example.bbyak.databinding.ActivityCalculateMeetingBinding
+import kotlinx.coroutines.launch
 
 class CalculateMeetingActivity : AppCompatActivity() {
 
@@ -65,8 +67,10 @@ class CalculateMeetingActivity : AppCompatActivity() {
                             Log.e("schedule", "${i.year}/${i.month}/${i.day} - ${i.schedule}")
                             time.add(i.schedule)
                         }
-                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("time").setValue(time)
-                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString()).child("submit").setValue(true)
+                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString())
+                            .child("time").setValue(time)
+                        usersRef.child(getUid()).child("meeting").child(meetingCode.toString())
+                            .child("submit").setValue(true)
 
                     } else binding.btConfirm.text = "제출하기"
                     isScheduleSaved = !isScheduleSaved
@@ -76,7 +80,13 @@ class CalculateMeetingActivity : AppCompatActivity() {
                     switchFragment(FRAGMENT_CALCULATE_MEETING)
                 }
                 FRAGMENT_CALCULATE_MEETING -> {
-                    confirmMeetingTime()
+                    lifecycleScope.launch {
+                        binding.progressBar.visibility = View.VISIBLE
+                        confirmMeetingTime().join()
+                        binding.progressBar.visibility = View.GONE
+
+                        finish()
+                    }
                 }
             }
         }
@@ -84,25 +94,36 @@ class CalculateMeetingActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
-    private fun confirmMeetingTime() {
-        val timeZone = cmFragment?.getSelectedTimeZone()
-        if (timeZone == null) Toast.makeText(this, "일정을 선택해 주세요.", Toast.LENGTH_SHORT).show()
-        else {
-            Log.e(
-                "selected timeZone",
-                "${timeZone.year}/${timeZone.month}/${timeZone.day}:${timeZone.start}-${timeZone.end}"
-            )
-            finish()
-            Toast.makeText(this, "뺙 확정 완료", Toast.LENGTH_SHORT).show()
-            //TODO(일정 확정하기) meetingCode 이용
-            val time = confirmedTime(timeZone.year, timeZone.month, timeZone.day, timeZone.start, timeZone.end)
-            val submitUserList = getSubmitUserList(meetingCode.toString())
-            for (uid in submitUserList) {
-                usersRef.child(uid).child("bbyak").child(meetingCode.toString()).setValue(time)
+    private fun confirmMeetingTime() =
+        lifecycleScope.launch {
+            val timeZone = cmFragment?.getSelectedTimeZone()
+            if (timeZone == null) Toast.makeText(
+                this@CalculateMeetingActivity,
+                "일정을 선택해 주세요.",
+                Toast.LENGTH_SHORT
+            ).show()
+            else {
+                Log.e(
+                    "selected timeZone",
+                    "${timeZone.year}/${timeZone.month}/${timeZone.day}:${timeZone.start}-${timeZone.end}"
+                )
+
+                val time = confirmedTime(
+                    timeZone.year,
+                    timeZone.month,
+                    timeZone.day,
+                    timeZone.start,
+                    timeZone.end
+                )
+                val submitUserList = getSubmitUserList(meetingCode.toString())
+                for (uid in submitUserList) {
+                    usersRef.child(uid).child("bbyak").child(meetingCode.toString()).setValue(time)
+                }
+                meetingsRef.child(meetingCode.toString()).child("done").setValue(true)
+
+                Toast.makeText(this@CalculateMeetingActivity, "뺙 확정 완료", Toast.LENGTH_SHORT).show()
             }
-            meetingsRef.child(meetingCode.toString()).child("done").setValue(true)
         }
-    }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.let {

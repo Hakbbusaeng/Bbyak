@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.applandeo.materialcalendarview.CalendarDay
 import com.applandeo.materialcalendarview.EventDay
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener
 import com.example.bbyak.databinding.FragmentSubmitScheduleBinding
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -61,16 +63,21 @@ class SubmitScheduleFragment : Fragment() {
         val meetingCreator = arguments?.getString("meetingCreator")
         binding.tvMeetingName.text = "$meetingName by $meetingCreator"
 
-        getCalendar()
         setTableList()
-        setEnabledDate()
+        lifecycleScope.launch {
+            binding.progressBar.visibility = View.VISIBLE
+            getCalendar().join()
+            setEnabledDate()
 
-        //set first page
-        currentCal = cals[0]
-        val first = cals[0].convertToCalendar()
-        first.set(Calendar.MONTH, first.get(Calendar.MONTH) - 1)
-        binding.selectCalendarView.setDate(first)
+            //set first page
+            setTimeTable(cals[0])
+            currentCal = cals[0]
+            val first = cals[0].convertToCalendar()
+            first.set(Calendar.MONTH, first.get(Calendar.MONTH) - 1)
+            binding.selectCalendarView.setDate(first)
 
+            binding.progressBar.visibility = View.GONE
+        }
 
         binding.rvSchedule.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
@@ -79,7 +86,6 @@ class SubmitScheduleFragment : Fragment() {
                 height = binding.rvSchedule.height / 17
                 Log.e("size", "width : $width, height: $height")
 
-                setTimeTable(cals[0])
                 binding.rvSchedule.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
@@ -87,7 +93,7 @@ class SubmitScheduleFragment : Fragment() {
         binding.selectCalendarView.setOnDayClickListener(object : OnDayClickListener {
             override fun onDayClick(eventDay: EventDay) {
                 currentCal?.let {
-                    setMyCalendarSchedule( it )
+                    setMyCalendarSchedule(it)
                 }
                 val clickedCal = eventDay.calendar
                 val myCal = getMyCal(
@@ -112,19 +118,20 @@ class SubmitScheduleFragment : Fragment() {
         }
     }
 
-    private fun getCalendar() {
-        //TODO(날짜 세팅) meetingCode 이용
-        val dateList = getMeetingDate(meetingCode.toString())
-        for (date in dateList) {
-            cals.add(MyCalendar(date.first, date.second, date.third))
-        }
+    private fun getCalendar() =
+        lifecycleScope.launch {
+            //TODO(날짜 세팅) meetingCode 이용
+            val dateList = getMeetingDate(meetingCode.toString())
+            for (date in dateList) {
+                cals.add(MyCalendar(date.first, date.second, date.third))
+            }
 
-        //요일, 스케줄 세팅
-        for (item in cals) {
-            item.dayOfWeek = getDayOfWeek(item.year, item.month, item.day)
-            item.schedule = getSchedule(item.dayOfWeek)
+            //요일, 스케줄 세팅
+            for (item in cals) {
+                item.dayOfWeek = getDayOfWeek(item.year, item.month, item.day)
+                item.schedule = getSchedule(item.dayOfWeek)
+            }
         }
-    }
 
     private fun getSchedule(str: String): String {
         //TODO(요일별 스케줄 가져오기)
@@ -189,12 +196,12 @@ class SubmitScheduleFragment : Fragment() {
         cal?.let { it.schedule = adapter.getSelectedTime() }
     }
 
-    fun refreshTimeTable(){
+    fun refreshTimeTable() {
         currentCal?.let { setMyCalendarSchedule(it) }
         currentCal?.let { setTimeTable(it) }
     }
 
-    fun getMySchedule(): ArrayList<MyCalendar>{
+    fun getMySchedule(): ArrayList<MyCalendar> {
         currentCal?.let { setMyCalendarSchedule(it) }
         return cals
     }

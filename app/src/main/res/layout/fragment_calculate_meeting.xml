@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -15,7 +15,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <com.applandeo.materialcalendarview.CalendarView
                 android:id="@+id/calendarView"
@@ -29,16 +29,28 @@
                 app:previousButtonSrc="@drawable/ic_previous"
                 app:selectionColor="@color/yellow"
                 app:todayLabelColor="@color/black" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCalculateMeetingResult"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="20dp"
-                android:paddingEnd="20dp"
                 android:paddingTop="20dp"
-                android:paddingBottom="150dp"/>
+                android:paddingEnd="20dp"
+                android:paddingBottom="150dp" />
         </LinearLayout>
 
 
     </androidx.core.widget.NestedScrollView>
-</FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
