@@ -404,7 +404,7 @@ private suspend fun returnUserBbyak(uid: String): List<MyMeeting> {
             val cRef = meetingsRef.child(code).child("creator")
             val cSnapshot = cRef.get().await()
             if (cSnapshot.exists()) {
-                creator = nSnapshot.value.toString()
+                creator = cSnapshot.value.toString()
             } else {
                 ""
             }
