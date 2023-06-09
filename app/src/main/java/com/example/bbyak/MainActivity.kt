@@ -2,21 +2,28 @@ package com.example.bbyak
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
 import com.example.bbyak.databinding.ActivityMainBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
     private val FRAGMENT_HOME = 1
     private val FRAGMENT_MYPAGE = 2
 
-    private lateinit var btHome: TextView;
-    private lateinit var btMyPage: TextView;
+    private lateinit var btHome: ImageButton
+    private lateinit var btMyPage: ImageButton
 
     private lateinit var binding: ActivityMainBinding
+
+    private val user = Firebase.auth.currentUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +38,15 @@ class MainActivity : AppCompatActivity() {
         btHome.setOnClickListener { switchFragment(FRAGMENT_HOME) }
         btMyPage.setOnClickListener { switchFragment(FRAGMENT_MYPAGE) }
 
+        if (user != null) {
+            Log.e("로그인", "성공")
+            user?.let {
+                val email = it.email.toString()
+                Log.e("email", email)
+            }
+        } else {
+            Log.e("로그인", "실패")
+        }
     }
 
     private fun switchFragment(fragment: Int){
@@ -41,8 +57,8 @@ class MainActivity : AppCompatActivity() {
                     setReorderingAllowed(true)
                     replace<HomeFragment>(binding.fragmentContainer.id)
                 }
-                btHome.setBackgroundResource(R.color.yellow)
-                btMyPage.setBackgroundResource(R.color.button_grey)
+                btHome.setImageResource(R.drawable.ic_home_selected)
+                btMyPage.setImageResource(R.drawable.ic_mypage_unselected)
             }
             FRAGMENT_MYPAGE->{
                 binding.toolbar.title = "마이페이지"
@@ -50,8 +66,8 @@ class MainActivity : AppCompatActivity() {
                     setReorderingAllowed(true)
                     replace<MypageFragment>(binding.fragmentContainer.id)
                 }
-                btHome.setBackgroundResource(R.color.button_grey)
-                btMyPage.setBackgroundResource(R.color.yellow)
+                btHome.setImageResource(R.drawable.ic_home_unselected)
+                btMyPage.setImageResource(R.drawable.ic_mypage_selected)
             }
         }
     }
