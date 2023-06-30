@@ -8,7 +8,8 @@
 
 
 ### 구조도
-![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/0f4e94b8-55db-4488-b1fb-245d78ee0b40)
+![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/30446272-fd31-44c4-ab25-4ad1efb871cd)
+
 
 
 ### 기능
@@ -44,27 +45,27 @@
 
 |**로그인**  |**회원가입** |
 |---|---|
-|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/7ae68b82-ace0-4f89-ad0f-dacd2ce784af)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/8f73b60e-2c89-4a30-ad51-34173fa028d9)|  
+|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/e8b1e284-e439-4382-99d9-f2a5d362d24e)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/136bfeed-b204-41d6-b734-9b3a784e37a1)|  
 
 |**홈(뺙 리스트)**  |**참여 명단** |**마이페이지** |
 |---|---|---|
-|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/df8b6a9e-7f08-432f-9b14-2843cd682873)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/d1b9820f-d231-40c9-af6f-68d6b8af1373)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/330486f3-9794-49d8-bde0-551aeedbe54e)|  
+|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/ed631968-d831-4426-b50e-f3c8ef304655)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/2dd333a2-f386-433a-87a8-7fd8d55e9a39)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/80f91e06-f311-43a3-ac92-deb2d123084e)|  
 
 |**내 스케줄 관리**  |**뺙 생성 1** |**뺙 생성 2** |
 |---|---|---|
-|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/f4f55459-551b-45f9-a596-1f9d30c3f06f)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/422c7155-018f-4c3e-bdb5-efce6709859b)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/3f2af70e-5e45-4202-a604-2cb1afb02193)|  
+|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/0da07f3a-0b98-4e91-aaaf-c0a2b4a02a68)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/a714cee8-507f-4a65-98dd-b39168f2b791)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/9e801085-87f2-4ed2-b4fd-f976a2bef7c6)|  
 
 |**뺙 조회 1**  |**뺙 조회 2** |
 |---|---|
-|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/6528bc5e-a226-44c6-8b00-047f669c282d)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/3497ce76-4c10-41c8-8676-e85449dc107e)|  
+|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/bcf193ce-bf55-41cf-918b-3cc8d9c4dd65)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/099535e9-253a-4805-a3da-bf3380041103)|  
 
 |**내 스케줄 제출 1**  |**내 스케줄 제출 2** |
 |---|---|
-|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/b2c0ede1-2dde-4e03-b4c6-7e11919c0405)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/6ad76831-5f02-42dd-9be9-e6ce06761cf7)|  
+|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/87bece03-6deb-4d1c-9fa4-dc4dd61302f2)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/dc911a82-3ae2-4e98-b801-3e621ea5aa05)|  
 
 |**스케줄 계산 1**  |**스케줄 계산 2** |**스케줄 계산 3** |
 |---|---|---|
-|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/fc5aab3f-a8b9-4bd7-8346-653cd63962c8)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/fa2da0bf-1309-44ca-a0e2-21cd60a7125e)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/9de7a81b-108f-412a-ba1a-4b2e840f029b)|  
+|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/bc63c1e6-a24a-42cf-b6b1-fc62188cd811)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/39e7d750-fe62-429c-abff-ad769c448f94)|![image](https://github.com/Hakbbusaeng/Bbyak/assets/81304917/6bc63abc-24bc-4c04-8283-57a3a0a300be)|  
 
 
 ### 역할
